@@ -285,27 +285,50 @@
     }
     .dot { width: 7px; height: 7px; border-radius: 99px; background: var(--green); box-shadow: 0 0 18px var(--green); }
 
-    /* 区域4: H1 — 更大更舒展 */
+    /* 区域4: H1 */
     h1 {
-      max-width: 1180px;
+      max-width: 780px;
       font-family: "Cormorant Garamond", "Didot", "Bodoni 72", "Times New Roman", "Songti SC", serif;
-      font-size: clamp(60px, 11.5vw, 152px);
+      font-size: clamp(40px, 5.6vw, 82px);
       line-height: .92;
-      letter-spacing: -.04em;
+      letter-spacing: -.035em;
       font-weight: 300;
+      font-style: italic;
       text-wrap: balance;
+    }
+
+    .name-line {
+      display: inline-flex;
+      align-items: baseline;
+      gap: clamp(16px, 2vw, 28px);
+      margin-bottom: clamp(10px, 1.3vw, 18px);
     }
 
     /* 区域14: display-cn 金色辉光增强 */
     .display-cn {
       font-family: "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+      font-size: clamp(52px, 5.8vw, 86px);
+      line-height: .95;
       letter-spacing: -.025em;
       font-weight: 300;
       font-style: italic;
       color: var(--gold);
       text-shadow: 0 0 48px rgba(223,195,124,.22), 0 0 120px rgba(223,195,124,.08);
       display: inline-block;
-      margin-bottom: clamp(8px, 1.5vw, 20px);
+    }
+
+    .latin-name {
+      font-size: clamp(18px, 1.8vw, 28px);
+      line-height: 1;
+      letter-spacing: .03em;
+      color: rgba(248,242,232,.72);
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .hero-title-text {
+      display: inline-block;
+      font-style: italic;
     }
 
     /* 区域4: hero-sub */
@@ -548,7 +571,7 @@
     .projects {
       display: flex;
       flex-direction: column;
-      gap: clamp(64px, 9vw, 120px);
+      gap: clamp(88px, 11vw, 150px);
     }
     .projects .timeline { display: contents; }
 
@@ -562,52 +585,29 @@
         radial-gradient(circle at 12% 18%, rgba(223,195,124,.035), transparent 26%);
     }
 
-    /* Case 01 — 左文右图 2列 */
-    .project-card.large {
-      display: grid;
-      grid-template-columns: 1fr 1.6fr;
-      gap: clamp(40px, 5vw, 72px);
-      align-items: start;
-    }
-
-    /* Case 02 — 全宽：文字区收窄 + 作品集网格铺满 */
-    .projects .timeline .project-card:nth-child(1) {
+    .project-card.case-writing,
+    .project-card.case-visual {
       display: flex;
       flex-direction: column;
     }
-    .projects .timeline .project-card:nth-child(1) > div:first-child {
-      max-width: 62%;
+
+    .project-card.case-writing > div:first-child,
+    .project-card.case-visual > div:first-child {
+      max-width: 720px;
       margin-bottom: 12px;
     }
-    .projects .timeline .project-card:nth-child(1) .project-meta {
+
+    .project-card.case-writing .project-meta,
+    .project-card.case-visual .project-meta {
       margin-bottom: 36px;
     }
 
-    /* Case 03 — 左图右文 2列（与 Case 01 镜像） */
-    .projects .timeline .project-card:nth-child(2) {
-      display: grid;
-      grid-template-columns: 1.6fr 1fr;
-      gap: clamp(40px, 5vw, 72px);
-      align-items: start;
-      margin-top: 0;
-    }
-    .projects .timeline .project-card:nth-child(2) > div:first-child {
-      grid-column: 2;
-      grid-row: 1;
-    }
-    .projects .timeline .project-card:nth-child(2) .project-meta {
-      grid-column: 2;
-      grid-row: 2;
-    }
-    .projects .timeline .project-card:nth-child(2) .shuxia-wall {
-      grid-column: 1;
-      grid-row: 1 / span 2;
-      margin-top: 0;
+    .project-card.case-product {
+      display: block;
     }
 
     /* Hover — 2列布局不适合 rotate，改纯 translateY */
     .project-card:hover { transform: translateY(-6px); }
-    .projects .timeline .project-card:nth-child(1):hover { transform: translateY(-6px); }
     .project-card:hover h3 { transform: translateX(4px); color: rgba(248,242,232,.96); }
     .project-card h3 { transition: transform .45s ease, color .45s ease; }
 
@@ -644,17 +644,47 @@
     }
     .project-card:hover .visual { transform: scale(1.025); border-color: rgba(223,195,124,.18); }
 
-    .portfolio-wall { display: grid; gap: 28px; margin-top: 36px; }
-    .portfolio-group { display: grid; gap: 12px; }
-    /* 商业封面：竖版海报，行高拉高，展示更完整 */
-    .portfolio-group.commercial {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-auto-rows: clamp(300px, 34vw, 460px);
+    .portfolio-wall,
+    .shuxia-wall {
+      display: flex;
+      gap: 24px;
+      margin-top: 34px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x proximity;
+      scroll-padding-inline: 4px;
+      padding: 4px 4px 14px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(248,242,232,.14) transparent;
+      -webkit-overflow-scrolling: touch;
     }
-    /* 杂志封面：竖版封面，同样拉高 */
+    .portfolio-wall::-webkit-scrollbar,
+    .shuxia-wall::-webkit-scrollbar { height: 4px; }
+    .portfolio-wall::-webkit-scrollbar-track,
+    .shuxia-wall::-webkit-scrollbar-track { background: transparent; }
+    .portfolio-wall::-webkit-scrollbar-thumb,
+    .shuxia-wall::-webkit-scrollbar-thumb {
+      background: rgba(248,242,232,.12);
+      border-radius: 999px;
+    }
+    .gallery-label {
+      margin: 0 0 14px;
+      font-size: 11px;
+      line-height: 1;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(223,195,124,.58);
+      font-weight: 400;
+    }
+    .portfolio-group { display: grid; gap: 12px; }
+    /* 商业视觉：一张大图 + 多张小图的杂志墙 */
+    .portfolio-group.commercial {
+      grid-template-columns: 1.18fr .82fr .82fr;
+      grid-auto-rows: clamp(190px, 18vw, 280px);
+    }
     .portfolio-group.magazine {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      grid-auto-rows: clamp(280px, 32vw, 420px);
+      grid-auto-rows: clamp(210px, 22vw, 320px);
     }
     .portfolio-frame {
       position: relative; display: block;
@@ -682,12 +712,11 @@
       position: absolute; left: 12px; right: 12px; bottom: 10px;
       z-index: 2; color: rgba(248,242,232,.78);
       font-size: 12px; letter-spacing: .08em; line-height: 1.35;
-      transform: translateY(4px);
-      transition: transform .45s ease, color .45s ease;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .45s ease, transform .45s ease, color .45s ease;
     }
-    .portfolio-group.commercial .portfolio-frame:nth-child(1),
-    .portfolio-group.commercial .portfolio-frame:nth-child(2) { min-height: 100%; }
-    .portfolio-group.commercial .portfolio-frame:nth-child(3) { grid-column: 1 / -1; }
+    .portfolio-group.commercial .portfolio-frame:nth-child(1) { grid-row: span 2; }
     .portfolio-group.magazine .portfolio-frame:nth-child(1) { grid-row: span 2; }
     .portfolio-group.magazine .portfolio-frame:nth-child(4) { grid-column: span 2; }
     .project-card:hover .portfolio-frame { opacity: .88; }
@@ -697,7 +726,7 @@
     /* contain 模式下 hover 轻微放大，padding 提供缓冲 */
     .portfolio-frame:hover img { transform: scale(1.03); }
     .portfolio-frame:hover::after { opacity: .5; }
-    .portfolio-frame:hover .portfolio-caption { transform: translateY(0); color: rgba(248,242,232,.94); }
+    .portfolio-frame:hover .portfolio-caption { opacity: 1; transform: translateY(0); color: rgba(248,242,232,.94); }
     /* caption 底部确保可读 */
     .portfolio-caption::before {
       content: "";
@@ -720,29 +749,60 @@
     }
     .china-wall .portfolio-frame:nth-child(2) { height: clamp(220px, 24vw, 360px); }
 
-    .shuxia-wall {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      grid-auto-rows: clamp(260px, 30vw, 460px);
-      gap: 12px; margin-top: 34px;
-    }
-    .shuxia-wall .portfolio-frame {
+    .portfolio-wall .image-card,
+    .shuxia-wall .image-card {
+      flex: 0 0 clamp(250px, 24vw, 340px);
+      height: clamp(360px, 44vw, 540px);
+      scroll-snap-align: start;
       background:
         radial-gradient(circle at 22% 18%, rgba(95,142,118,.12), transparent 26%),
         linear-gradient(155deg, rgba(248,242,232,.04), rgba(248,242,232,.006));
+      border-color: rgba(248,242,232,.045);
       filter: saturate(.88) brightness(.93);
     }
-    .shuxia-wall .portfolio-frame:nth-child(1),
-    .shuxia-wall .portfolio-frame:nth-child(3) { grid-row: span 2; }
-    .shuxia-wall .portfolio-frame:nth-child(2),
-    .shuxia-wall .portfolio-frame:nth-child(4) { transform: translateY(22px); }
-    .shuxia-wall .portfolio-frame:nth-child(n+5) { grid-row: span 1; filter: saturate(.72) brightness(.84); }
-    .shuxia-wall .portfolio-frame img { object-fit: contain; padding: 8px; }
-    .shuxia-wall .portfolio-frame::after {
+    .portfolio-wall .image-card:hover,
+    .shuxia-wall .image-card:hover {
+      flex-basis: clamp(360px, 36vw, 520px);
+      height: clamp(420px, 48vw, 600px);
+      z-index: 2;
+    }
+    .portfolio-wall .image-card:nth-child(n+5),
+    .shuxia-wall .image-card:nth-child(n+5) { filter: saturate(.72) brightness(.84); }
+    .portfolio-wall .image-card img,
+    .shuxia-wall .image-card img {
+      object-fit: contain;
+      object-position: center center;
+      padding: 10px;
+    }
+    .portfolio-wall .image-card::after,
+    .shuxia-wall .image-card::after {
       background: radial-gradient(circle at 50% 100%, rgba(1,3,7,.34), transparent 64%);
       opacity: .5;
     }
-    .project-card:hover .shuxia-wall .portfolio-frame:nth-child(even) { transform: translateY(14px) scale(1.012); }
+    .project-card:hover .portfolio-wall .image-card,
+    .project-card:hover .shuxia-wall .image-card {
+      opacity: .88;
+      transform: none;
+    }
+    .portfolio-wall .image-card:hover,
+    .shuxia-wall .image-card:hover {
+      opacity: 1;
+      transform: translateY(-6px);
+    }
+    .portfolio-wall .image-card:hover img,
+    .shuxia-wall .image-card:hover img {
+      transform: none;
+    }
+
+    .product-note {
+      margin-top: 28px;
+      font-family: "Cormorant Garamond", "Songti SC", "STSong", serif;
+      font-size: 18px;
+      line-height: 1.7;
+      font-style: italic;
+      color: rgba(248,242,232,.54);
+      letter-spacing: .02em;
+    }
 
     /* Proof section */
     .proof-wrap { display: grid; grid-template-columns: .8fr 1.2fr; gap: 38px; align-items: stretch; }
@@ -813,34 +873,39 @@
       color: var(--muted); font-weight: 300;
     }
 
-    /* 区域10: Contact — 电影感终点 */
+    /* 区域10: Contact — 安静收束 */
     .contact {
-      min-height: 92vh;
-      display: grid; place-items: center;
-      text-align: center;
+      min-height: auto;
+      display: block;
+      text-align: left;
       position: relative; overflow: hidden;
-      padding: var(--section-v-lg) clamp(28px, 7vw, 118px);
+      padding: clamp(120px, 16vw, 190px) var(--gutter) clamp(150px, 20vw, 240px);
     }
     .contact::before {
       content: "";
       position: absolute;
-      width: 720px; height: 720px; border-radius: 50%;
-      background: radial-gradient(circle, rgba(214,236,243,.08), transparent 60%);
-      filter: blur(18px); z-index: -1;
-      animation: moonBreath 22s ease-in-out infinite alternate;
+      width: 560px; height: 560px; border-radius: 50%;
+      left: 50%; top: 54%; transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(214,236,243,.045), transparent 62%);
+      filter: blur(22px); z-index: -1;
     }
     .contact::after {
       content: ""; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 80% 60% at 50% 50%, transparent 30%, rgba(1,3,7,.6) 100%);
+      background: radial-gradient(ellipse 76% 56% at 50% 54%, transparent 34%, rgba(1,3,7,.46) 100%);
       z-index: -1; pointer-events: none;
     }
-    .contact-inner { max-width: 1080px; position: relative; }
-    .contact h2 {
-      font-size: clamp(44px, 7vw, 108px);
-      white-space: nowrap; line-height: .94; letter-spacing: -.035em;
+    .contact-inner { max-width: 1320px; margin: 0 auto; position: relative; }
+    .contact-copy {
+      max-width: 720px;
+      margin: clamp(44px, 6vw, 72px) auto 0;
+      text-align: center;
     }
-    .contact p { color: var(--muted); margin: 40px auto 56px; max-width: 560px; font-size: 18px; font-weight: 300; line-height: 2.0; }
-    .contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 18px; }
+    .contact h2 {
+      font-size: clamp(34px, 4vw, 56px);
+      white-space: normal; line-height: 1.05; letter-spacing: -.02em;
+    }
+    .contact p { color: var(--muted); margin: 24px auto 48px; max-width: 520px; font-size: 17px; font-weight: 300; line-height: 1.9; }
+    .contact-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 28px; }
     .contact-links .btn { animation: none; min-width: auto; }
 
     footer {
@@ -912,44 +977,49 @@
       /* Layout adjustments */
       .orbit { opacity: .28; right: -120px; }
       .hero { min-height: 100svh; padding-top: 118px; }
-      h1 { font-size: clamp(52px, 17vw, 86px); }
+      h1 { font-size: clamp(34px, 9.8vw, 56px); }
+      .name-line {
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        margin-bottom: 14px;
+      }
+      .display-cn { font-size: clamp(44px, 12vw, 62px); }
+      .latin-name { font-size: clamp(17px, 4.8vw, 23px); }
       .marquee { transform: rotate(-1deg) scale(1.04); }
       .marquee-track { font-size: clamp(34px, 12vw, 60px); }
       .marquee-track.zh { font-size: 13px; letter-spacing: .18em; }
       .grid-3, .proof-wrap, .now { grid-template-columns: 1fr; }
 
-      /* 移动端：三个 project-card 全部改回单列 flex */
-      .project-card.large,
-      .projects .timeline .project-card:nth-child(1),
-      .projects .timeline .project-card:nth-child(2) {
+      /* 移动端：三个 project-card 全部改回单列 */
+      .project-card.case-writing,
+      .project-card.case-visual,
+      .project-card.case-product {
         display: flex;
         flex-direction: column;
       }
-      /* 重置 Case 03 的 grid placement */
-      .projects .timeline .project-card:nth-child(2) > div:first-child,
-      .projects .timeline .project-card:nth-child(2) .project-meta,
-      .projects .timeline .project-card:nth-child(2) .shuxia-wall {
-        grid-column: unset;
-        grid-row: unset;
-      }
-      /* Case 02 文字区取消宽度限制 */
-      .projects .timeline .project-card:nth-child(1) > div:first-child {
+      .project-card.case-writing > div:first-child,
+      .project-card.case-visual > div:first-child {
         max-width: 100%;
       }
-      .projects { gap: 40px; }
+      .projects { gap: 56px; }
       .china-wall .portfolio-frame { height: clamp(160px, 45vw, 260px); }
-      .portfolio-group.commercial,
-      .portfolio-group.magazine { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 190px; }
-      .portfolio-group.commercial .portfolio-frame:nth-child(3),
-      .portfolio-group.magazine .portfolio-frame:nth-child(4) { grid-column: 1 / -1; }
-      .shuxia-wall { grid-template-columns: 1fr; grid-auto-rows: auto; }
-      .shuxia-wall .portfolio-frame,
-      .shuxia-wall .portfolio-frame:nth-child(1),
-      .shuxia-wall .portfolio-frame:nth-child(3) { grid-row: auto; }
-      .shuxia-wall .portfolio-frame:nth-child(2),
-      .shuxia-wall .portfolio-frame:nth-child(4),
-      .project-card:hover .shuxia-wall .portfolio-frame:nth-child(even) { transform: none; }
-      .shuxia-wall .portfolio-frame img { height: auto; max-height: 76vh; }
+      .portfolio-wall,
+      .shuxia-wall {
+        gap: 24px;
+        margin-inline: calc(var(--gutter) * -1);
+        padding-inline: var(--gutter);
+      }
+      .portfolio-wall .image-card,
+      .portfolio-wall .image-card:hover,
+      .shuxia-wall .image-card,
+      .shuxia-wall .image-card:hover {
+        flex-basis: min(78vw, 340px);
+        height: min(112vw, 520px);
+      }
+      .project-card:hover .portfolio-wall .image-card:nth-child(even),
+      .project-card:hover .shuxia-wall .image-card:nth-child(even) { transform: none; }
+      .portfolio-wall .image-card img,
+      .shuxia-wall .image-card img { height: 100%; max-height: none; }
       .metrics { grid-template-columns: 1fr; }
       .step { grid-template-columns: 1fr; }
       section, main section:nth-child(even) { padding-block: 112px; }
@@ -973,7 +1043,7 @@
     <nav>
       <a href="#what">What I Do</a>
       <a href="#work">Selected Work</a>
-      <a href="#proof">说明书</a>
+      <a href="#proof">About me</a>
       <a href="#method">How I Work</a>
       <a href="#now">Now</a>
       <a class="cta-small" href="#contact">Contact</a>
@@ -993,27 +1063,21 @@
 
     <div class="hero-inner reveal">
       <div class="eyebrow"><span class="dot"></span>AI · Content · Systems · Personal Brand</div>
-      <h1><span class="display-cn">依林</span><br/>A continuously growing digital garden...</h1>
-      <p class="hero-sub">
-        关于城市、人与连接。<br/>
-        关于那些会发光的瞬间。
-      </p>
-      <div class="hero-actions">
-        <a href="#work" class="btn primary">进入作品集</a>
-        <a href="#method" class="btn">查看我的方法</a>
-        <a href="#contact" class="btn">联系我</a>
-      </div>
+      <h1>
+        <span class="name-line"><span class="display-cn">依林</span><span class="latin-name">Yveline</span></span><br/>
+        <span class="hero-title-text">A continuously growing digital garden...</span>
+      </h1>
     </div>
   </section>
 
   <div class="marquee">
     <div class="marquee-track">
-      <span>Digital Garden</span><span>City Fragments</span><span>Sunday Grayling</span><span>Writing</span><span>AI Visual</span><span>Connection</span><span>Self Creation</span><span>Night Forest</span>
-      <span>Digital Garden</span><span>City Fragments</span><span>Sunday Grayling</span><span>Writing</span><span>AI Visual</span><span>Connection</span><span>Self Creation</span><span>Night Forest</span>
+      <span>Digital Garden</span><span>World Building</span><span>AI Visuals</span><span>Personal Universe</span><span>Ideas in Progress</span><span>The Shape of Thought</span><span>Content System</span><span>Product Experiments</span><span>Storytelling</span><span>Design</span>
+      <span>Digital Garden</span><span>World Building</span><span>AI Visuals</span><span>Personal Universe</span><span>Ideas in Progress</span><span>The Shape of Thought</span><span>Content System</span><span>Product Experiments</span><span>Storytelling</span><span>Design</span>
     </div>
     <div class="marquee-track zh">
-      <span>城市</span><span>连接</span><span>发光瞬间</span><span>树下坐</span><span>私人宇宙</span><span>复盘</span><span>旅行</span><span>未命名的感觉</span>
-      <span>城市</span><span>连接</span><span>发光瞬间</span><span>树下坐</span><span>私人宇宙</span><span>复盘</span><span>旅行</span><span>未命名的感觉</span>
+      <span>数字花园</span><span>连接</span><span>旅行</span><span>树下坐</span><span>跨文化</span><span>AI 视觉</span><span>内容系统</span><span>设计</span><span>好玩</span>
+      <span>数字花园</span><span>连接</span><span>旅行</span><span>树下坐</span><span>跨文化</span><span>AI 视觉</span><span>内容系统</span><span>设计</span><span>好玩</span>
     </div>
   </div>
 
@@ -1026,24 +1090,24 @@
         <div class="section-rule">
           <div class="kicker">01 — What I Do</div>
         </div>
-        <h2>一些观察、机制、碎片与正在生长的想法。</h2>
-        <p>我试着让复杂的东西，变好玩一点。</p>
+        <h2>把复杂的东西，<br/>做得好玩一点。</h2>
+        <p>我喜欢把脑子里的想法、观察和经验，做成可以被读懂、被看见、被使用的东西。<br/>语言、AI 视觉和产品，都是我把想法从脑内带到现实里的方式。</p>
       </div>
       <div class="grid-3">
         <article class="card reveal">
-          <h3>AI 视觉与品牌表达</h3>
-          <p>用 AI 生成海报、封面、活动视觉和人物风格方案，把抽象定位变成可展示的视觉资产。</p>
-          <div class="tagline">适合：活动宣传 / 个人品牌 / 内容封面</div>
+          <h3>01 / 把想法讲清楚 - Language</h3>
+          <p>我喜欢处理语言之间的缝隙：一个词怎么被理解，一句话为什么会失真，一种文化经验怎样被说给另一个世界的人听。</p>
+          <div class="tagline">语言 / 翻译 / 汉教 / 跨文化交流</div>
         </article>
         <article class="card reveal">
-          <h3>内容系统与叙事设计</h3>
-          <p>把经验、观察、项目和人格特质整理成文章、页面、栏目和长期更新的内容结构。</p>
-          <div class="tagline">适合：个人网站 / 社媒矩阵 / 数字花园</div>
+          <h3>02 / 让点子有画面 - Worldbuilding</h3>
+          <p>让它从我脑子里的东西，变成别人也能看见、能感受到、能走进去的小世界。</p>
+          <div class="tagline">AI 视觉 / 海报 / 封面 / 视频 / 短剧 / 风格 / 场景</div>
         </article>
         <article class="card reveal">
-          <h3>流程自动化与轻量产品</h3>
-          <p>把重复工作、信息收集、内容分发和业务流程改造成更省力、更清晰的系统。</p>
-          <div class="tagline">适合：小团队 / 创作者 / 本地服务</div>
+          <h3>03 / 让产品跑出来 - Product</h3>
+          <p>把零散的观察和流程，整理成可以被打开、被使用、被反馈的产品原型。让产品解决问题、验证需求、持续迭代。</p>
+          <div class="tagline">个人网站 / 知识库 / AI workflow / 产品实验</div>
         </article>
       </div>
     </section>
@@ -1053,111 +1117,100 @@
         <div class="section-rule">
           <div class="kicker">02 — Selected Work</div>
         </div>
-        <h2>一些项目与故事</h2>
-        <p>Fragments of work, life, and attention.</p>
+        <h2>小作品们</h2>
+        <p>未完待续</p>
       </div>
       <div class="projects">
-        <article class="card project-card large reveal">
+        <article class="card project-card case-writing reveal">
           <div>
             <div class="kicker">Case 01</div>
-            <h3>外国人来华体验服务 · 内容前端</h3>
-            <p>从英语角和本地探索出发，测试外国人在武汉生活、游玩、适应城市时的真实需求，把一次市场同行变成可传播的内容样本。</p>
+            <h3>树下坐 · 个人写作品牌</h3>
+            <p>我正在搭建的个人写作账号，围绕旅行、城市、审美、关系、语言和自我整理展开，记录我在不同地方遇见的人、场景和想法。</p>
             <div class="project-meta">
-              <span class="pill">User Research</span><span class="pill">Local Guide</span><span class="pill">Storytelling</span><span class="pill">Community</span>
+              <span class="pill">Writing</span><span class="pill">Personal Brand</span><span class="pill">City Notes</span><span class="pill">Visual Identity</span>
             </div>
           </div>
-          <div class="china-wall" aria-label="外国人来华体验视觉展示">
-            <figure class="portfolio-frame">
-              <img src="assets/china-experience-01.jpg" alt="绿荫秋千插画">
+          <div class="shuxia-wall" aria-label="树下坐内容展示">
+            <figure class="portfolio-frame image-card">
+              <img src="assets/shuxia-writing-01.jpg" alt="树下坐城市与再见文字图">
             </figure>
-            <figure class="portfolio-frame">
-              <img src="assets/china-experience-02.png" alt="雪景河岸插画">
+            <figure class="portfolio-frame image-card">
+              <img src="assets/shuxia-writing-02.jpg" alt="树下坐朋友生活碎片图">
+            </figure>
+            <figure class="portfolio-frame image-card">
+              <img src="assets/shuxia-writing-03.jpg" alt="树下坐深夜城市文字图">
+            </figure>
+            <figure class="portfolio-frame image-card">
+              <img src="assets/shuxia-writing-04.jpg" alt="树下坐江边夜色文字图">
+            </figure>
+            <figure class="portfolio-frame image-card">
+              <img src="assets/shuxia-writing-05.jpg" alt="树下坐小狗故事长图">
+            </figure>
+            <figure class="portfolio-frame image-card">
+              <img src="assets/shuxia-writing-06.jpg" alt="树下坐小狗偏爱文字图">
+            </figure>
+            <figure class="portfolio-frame image-card">
+              <img src="assets/shuxia-writing-07.jpg" alt="树下坐小狗亲密关系文字图">
+            </figure>
+            <figure class="portfolio-frame image-card">
+              <img src="assets/shuxia-writing-08.jpg" alt="树下坐小狗离别文字图">
             </figure>
           </div>
         </article>
         <div class="timeline">
-          <article class="card project-card reveal">
+          <article class="card project-card case-visual reveal">
             <div>
               <div class="kicker">Case 02</div>
-              <h3>AI 商业视觉作品集</h3>
-              <p>围绕不同行业老板的真实使用场景，生成短视频封面、活动海报、宣传长图，用个人网站集中展示。</p>
+              <h3>AI商业视觉</h3>
+              <p>用 AI 生成和调整的商业视觉实验，包括杂志封面、人物海报、短视频封面、活动宣传图和个人品牌视觉。</p>
             </div>
-            <div class="project-meta"><span class="pill">AI Image</span><span class="pill">Poster</span><span class="pill">Portfolio</span></div>
+            <div class="project-meta"><span class="pill">AI Visual</span><span class="pill">Cover Design</span><span class="pill">Poster</span><span class="pill">Commercial Visual</span></div>
             <div class="portfolio-wall">
-              <div class="portfolio-group commercial">
-                <figure class="portfolio-frame">
-                  <img src="assets/commercial-01.png" alt="夜色商业封面">
-                  <figcaption class="portfolio-caption">夜色商业封面</figcaption>
-                </figure>
-                <figure class="portfolio-frame">
-                  <img src="assets/commercial-02.png" alt="创始人访谈海报">
-                  <figcaption class="portfolio-caption">创始人访谈海报</figcaption>
-                </figure>
-                <figure class="portfolio-frame">
-                  <img src="assets/commercial-03.png" alt="长期主义封面">
-                  <figcaption class="portfolio-caption">长期主义封面</figcaption>
-                </figure>
-              </div>
-              <div class="portfolio-group magazine">
-                <figure class="portfolio-frame">
-                  <img src="assets/magazine-01.png" alt="红色杂志封面">
-                  <figcaption class="portfolio-caption">红色杂志封面</figcaption>
-                </figure>
-                <figure class="portfolio-frame">
-                  <img src="assets/magazine-02.png" alt="春日美妆视觉">
-                  <figcaption class="portfolio-caption">春日美妆视觉</figcaption>
-                </figure>
-                <figure class="portfolio-frame">
-                  <img src="assets/magazine-03.png" alt="橙色生活杂志">
-                  <figcaption class="portfolio-caption">橙色生活杂志</figcaption>
-                </figure>
-                <figure class="portfolio-frame">
-                  <img src="assets/magazine-04.png" alt="春日封面设计">
-                  <figcaption class="portfolio-caption">春日封面设计</figcaption>
-                </figure>
-                <figure class="portfolio-frame">
-                  <img src="assets/magazine-05.png" alt="柔粉联系页视觉">
-                  <figcaption class="portfolio-caption">柔粉联系页视觉</figcaption>
-                </figure>
-                <figure class="portfolio-frame">
-                  <img src="assets/magazine-06.png" alt="西语杂志封面">
-                  <figcaption class="portfolio-caption">西语杂志封面</figcaption>
-                </figure>
-              </div>
+              <figure class="portfolio-frame image-card">
+                <img src="assets/commercial-01.png" alt="夜色商业封面">
+                <figcaption class="portfolio-caption">视频封面制作示例</figcaption>
+              </figure>
+              <figure class="portfolio-frame image-card">
+                <img src="assets/commercial-02.png" alt="创始人访谈海报">
+                <figcaption class="portfolio-caption">访谈海报制作示例</figcaption>
+              </figure>
+              <figure class="portfolio-frame image-card">
+                <img src="assets/commercial-03.png" alt="长期主义封面">
+                <figcaption class="portfolio-caption">视频封面制作示例</figcaption>
+              </figure>
+              <figure class="portfolio-frame image-card">
+                <img src="assets/magazine-01.png" alt="红色杂志封面">
+                <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
+              </figure>
+              <figure class="portfolio-frame image-card">
+                <img src="assets/magazine-02.png" alt="春日美妆视觉">
+                <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
+              </figure>
+              <figure class="portfolio-frame image-card">
+                <img src="assets/magazine-03.png" alt="橙色生活杂志">
+                <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
+              </figure>
+              <figure class="portfolio-frame image-card">
+                <img src="assets/magazine-04.png" alt="春日封面设计">
+                <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
+              </figure>
+              <figure class="portfolio-frame image-card">
+                <img src="assets/magazine-05.png" alt="柔粉联系页视觉">
+                <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
+              </figure>
+              <figure class="portfolio-frame image-card">
+                <img src="assets/magazine-06.png" alt="西语杂志封面">
+                <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
+              </figure>
             </div>
           </article>
-          <article class="card project-card reveal">
+          <article class="card project-card case-product reveal">
             <div>
               <div class="kicker">Case 03</div>
-              <h3>树下坐 · 个人写作品牌</h3>
-              <p>围绕旅行、审美、城市、主体性和自我整理，建立稳定的文章风格与视觉语言。</p>
-            </div>
-            <div class="project-meta"><span class="pill">Writing</span><span class="pill">Visual Identity</span><span class="pill">Essay</span></div>
-            <div class="shuxia-wall" aria-label="树下坐内容展示">
-              <figure class="portfolio-frame">
-                <img src="assets/shuxia-writing-01.jpg" alt="树下坐城市与再见文字图">
-              </figure>
-              <figure class="portfolio-frame">
-                <img src="assets/shuxia-writing-02.jpg" alt="树下坐朋友生活碎片图">
-              </figure>
-              <figure class="portfolio-frame">
-                <img src="assets/shuxia-writing-03.jpg" alt="树下坐深夜城市文字图">
-              </figure>
-              <figure class="portfolio-frame">
-                <img src="assets/shuxia-writing-04.jpg" alt="树下坐江边夜色文字图">
-              </figure>
-              <figure class="portfolio-frame">
-                <img src="assets/shuxia-writing-05.jpg" alt="树下坐小狗故事长图">
-              </figure>
-              <figure class="portfolio-frame">
-                <img src="assets/shuxia-writing-06.jpg" alt="树下坐小狗偏爱文字图">
-              </figure>
-              <figure class="portfolio-frame">
-                <img src="assets/shuxia-writing-07.jpg" alt="树下坐小狗亲密关系文字图">
-              </figure>
-              <figure class="portfolio-frame">
-                <img src="assets/shuxia-writing-08.jpg" alt="树下坐小狗离别文字图">
-              </figure>
+              <h3>网站与产品</h3>
+              <p>收集我正在尝试做成产品的东西：个人网站、知识库、AI workflow、网页原型、小型 MVP...</p>
+              <div class="project-meta"><span class="pill">Product Experiment</span><span class="pill">Personal Website</span><span class="pill">AI Workflow</span><span class="pill">MVP</span><span class="pill">Digital Garden</span></div>
+              <p class="product-note">(详见简历，持续更新中...)</p>
             </div>
           </article>
         </div>
@@ -1167,21 +1220,20 @@
     <section id="proof">
       <div class="section-head reveal">
         <div class="section-rule">
-          <div class="kicker">03 — Manual</div>
+          <div class="kicker">03 — About me</div>
         </div>
-        <h2>我的说明书</h2>
+        <h2>About me</h2>
       </div>
       <div class="proof-wrap">
         <div class="card manual-card reveal">
           <div class="kicker">Interests</div>
           <h3>热爱 / 感兴趣的事</h3>
           <ul class="manual-list">
-            <li>记录、写作、阅读</li>
-            <li>音乐</li>
-            <li>旅行、摄影</li>
-            <li>羽毛球🏸、网球🎾、跑步🏃‍♀️‍➡️、徒步⛰️、飞盘🥏</li>
-            <li>习得新技能（0-1）、新知识、新观点、新的思维模型</li>
-            <li>整理，复盘，自我探索</li>
+            <li>音乐 🎼、旅行🚂、摄影📸</li>
+            <li>网球🎾、徒步⛰️、飞盘🥏</li>
+            <li>记录、写作、阅读、整理、复盘、自我探索</li>
+            <li>习得新技能、新知识、新观点、新的思维模型</li>
+            <li>AI创作、网页、图像、工作流、知识库、小程序</li>
           </ul>
         </div>
         <div class="card manual-card reveal">
@@ -1209,16 +1261,31 @@
         <div class="step reveal">
           <time>01</time>
           <div>
-            <h3>擅长</h3>
+            <h3>硬技能</h3>
             <ul>
-              <li><strong>通用能力：</strong>共情能力-我最大的天赋、沟通能力、时间管理、任务管理、精力管理</li>
-              <li><strong>知识：</strong>个人成长、英语语言学习</li>
-              <li><strong>技能：</strong>英语（专四优秀）、写作、时间&amp;事件复盘、内容整理与表达、AI 辅助视觉与内容创作、个人网站与数字空间设计</li>
+              <li>写作</li>
+              <li>复盘与迭代</li>
+              <li>信息整理与知识管理</li>
+              <li>网页搭建</li>
+              <li>AI 修图</li>
+              <li>对文字与画面的审美</li>
             </ul>
           </div>
         </div>
         <div class="step reveal">
           <time>02</time>
+          <div>
+            <h3>软技能</h3>
+            <ul>
+              <li>同理心，是我最大的天赋</li>
+              <li>自驱型的快速学习者</li>
+              <li>心理韧性</li>
+              <li>时间管理</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step reveal">
+          <time>03</time>
           <div>
             <h3>他人对我的评价</h3>
             <ul>
@@ -1227,17 +1294,6 @@
               <li>有灵性，时不时会说出一些很有灵性的话</li>
               <li>有慧根，闪闪发光让人忍不住跟着走的女孩</li>
               <li>洞察超强，感受力强，很会发现别人的优点</li>
-            </ul>
-          </div>
-        </div>
-        <div class="step reveal">
-          <time>03</time>
-          <div>
-            <h3>各类测评结果</h3>
-            <ul>
-              <li>MBTI：ENFJ</li>
-              <li>九型人格：助人型</li>
-              <li>人类图：Sacral Authority</li>
             </ul>
           </div>
         </div>
@@ -1254,13 +1310,13 @@
       <div class="card table-card reveal">
         <table>
           <thead>
-            <tr><th>方向</th><th>我能做什么</th><th>工具 / 方法</th><th>交付物</th></tr>
+            <tr><th>方向</th><th>我能做什么</th><th>交付物</th></tr>
           </thead>
           <tbody>
-            <tr><td>AI 视觉</td><td>封面、海报、人物风格、活动视觉</td><td>Prompt / Image AI / Layout</td><td>视觉套图 / 作品集页面</td></tr>
-            <tr><td>内容系统</td><td>文章栏目、社媒叙事、个人品牌表达</td><td>Writing / SEO / Content Map</td><td>网站文案 / 内容日历 / 栏目结构</td></tr>
-            <tr><td>个人网站</td><td>首页、项目页、博客、联系转化</td><td>HTML / WordPress / Astra / SEO</td><td>可上线网站 / 简历站 / 作品集</td></tr>
-            <tr><td>流程整理</td><td>把混乱流程变成清晰系统</td><td>Notion / Automation / Workflow</td><td>任务系统 / 数据库 / 自动化流程</td></tr>
+            <tr><td>AI 内容创作</td><td>围绕一个主题或账号定位，完成从选题策划、脚本撰写、素材组织到内容结构搭建的完整流程</td><td>选题库 / 视频脚本 / 图文内容 / 教学素材 / 内容栏目</td></tr>
+            <tr><td>语言与跨文化表达</td><td>面向不同语言和文化背景的人，重新组织词语、例子和语气，让内容更准确、更自然、更容易被听懂</td><td>中文教学稿 / 英文润色 / 翻译优化 / 口播稿 / 跨文化内容</td></tr>
+            <tr><td>AI 商业视觉</td><td>根据封面、海报、宣传、个人形象等具体场景，设计风格方向并用 AI 生成可展示的视觉素材</td><td>短视频封面 / 活动海报 / 杂志封面 / 人物写真 / 宣传视觉</td></tr>
+            <tr><td>AI 产品原型</td><td>从一个真实需求出发，拆解使用场景、用户路径和核心功能，做出能跑、能演示、能继续迭代的产品原型</td><td>AI 分析工具 / 个人网站 / 作品集页面 / Workflow / MVP Demo</td></tr>
           </tbody>
         </table>
       </div>
@@ -1277,20 +1333,19 @@
         <article class="card reveal">
           <h3>最近在做</h3>
           <div class="fragment-list">
-            <div class="fragment">搭建个人宇宙网站：把作品、文章、项目和方法论放进同一个入口。</div>
-            <div class="fragment">测试 AI 视觉作品集：为不同行业场景生成封面、海报和宣传长图。</div>
-            <div class="fragment">观察武汉本地生活如何成为外国人来华体验服务的内容样本。</div>
-            <div class="fragment">对外汉教项目尝试中。</div>
-            <div class="fragment">西班牙语学习中。</div>
+            <div class="fragment">AI 中文教学短视频：调研 TikTok / YouTube 上的中国文化相关账号，拆解选题、脚本、画面和传播形式，再用 AI 辅助做出自己的内容样本。</div>
+            <div class="fragment">个人网站与作品集：把作品、文章、项目和个人说明书整理成一个入口，让别人更快理解我是谁、我在做什么、能交付什么。</div>
+            <div class="fragment">AI 产品原型：继续完善「心动作战室」，尝试 Vision Board 网站，也在整理 AI 生图、音频生成视频、群聊信息汇总等工作流。</div>
+            <div class="fragment">内容发布与复盘：连续测试不同主题和形式，根据数据调整选题、表达方式和制作流程。</div>
           </div>
         </article>
         <article class="card reveal">
-          <h3>正在收集</h3>
+          <h3>正在探索</h3>
           <div class="fragment-list">
-            <div class="fragment">城市角落、市场、咖啡馆、公园、人与人的短暂连接。</div>
-            <div class="fragment">适合写成机制笔记的小模型：为什么人会被某种氛围吸引。</div>
-            <div class="fragment">可以变成案例的真实项目：有背景、有过程、有结果。</div>
-            <div class="fragment">那些暂时还无法准确命名的感觉。</div>
+            <div class="fragment">海外中国文化相关内容怎样被看见、被理解、被持续关注。</div>
+            <div class="fragment">一个真实需求怎样被拆成产品路径、核心功能和 MVP。</div>
+            <div class="fragment">AI workflow 怎样从临时工具变成稳定的创作系统。</div>
+            <div class="fragment">网站的视觉设计怎样做到亮眼出彩。</div>
           </div>
         </article>
       </div>
@@ -1298,16 +1353,17 @@
 
     <section class="contact" id="contact">
       <div class="contact-inner reveal">
-        <div class="section-rule" style="justify-content:center; margin-bottom:28px;">
-          <div class="kicker">Contact</div>
+        <div class="section-rule">
+          <div class="kicker">07 — Contact</div>
         </div>
-        <h2>引你看看，我的宇宙。</h2>
-        <p>如果这些东西也让你感兴趣，<br/>我们也许会聊得来。</p>
-        <div class="contact-links">
-          <a href="mailto:1954063280@qq.com" class="btn primary">Email</a>
-          <a href="#" class="btn">WeChat · YL1010Go</a>
-          <a href="https://www.instagram.com/sundaygrayling" class="btn" target="_blank" rel="noreferrer">Ins · @sundaygrayling</a>
-          <a href="" class="btn disabled" aria-disabled="true">PDF 简历</a>
+        <div class="contact-copy">
+          <h2>交个朋友</h2>
+          <p>关于 AI、内容、语言、网站、产品、或者任何。</p>
+          <div class="contact-links">
+            <a href="mailto:1954063280@qq.com" class="btn primary">1954063280@qq.com</a>
+            <a href="#" class="btn">WeChat · YL1010Go</a>
+            <a href="https://www.instagram.com/yvelinegong" class="btn" target="_blank" rel="noreferrer">Instagram · @yvelinegong</a>
+          </div>
         </div>
       </div>
     </section>
@@ -1315,7 +1371,7 @@
 
   <footer>
     <span>© 2026 Yilin Gong. Built as a living personal universe.</span>
-    <span>El universo de Yilin · 树下坐 · Sunday Grayling</span>
+    <span>El universo de Yilin · 树下坐 · Yveline</span>
   </footer>
 
   <script>
@@ -1402,6 +1458,22 @@
         });
       });
     }
+
+    // Editorial galleries: vertical wheel nudges the horizontal carousel.
+    document.querySelectorAll('.shuxia-wall, .portfolio-wall').forEach((gallery) => {
+      gallery.addEventListener('wheel', (event) => {
+        if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+        const maxScroll = gallery.scrollWidth - gallery.clientWidth;
+        if (maxScroll <= 0) return;
+        const next = Math.min(maxScroll, Math.max(0, gallery.scrollLeft + event.deltaY));
+        const atStart = gallery.scrollLeft <= 1;
+        const atEnd = gallery.scrollLeft >= maxScroll - 1;
+        if ((!atStart && event.deltaY < 0) || (!atEnd && event.deltaY > 0)) {
+          event.preventDefault();
+          gallery.scrollLeft = next;
+        }
+      }, { passive: false });
+    });
   </script>
 </body>
 </html>
