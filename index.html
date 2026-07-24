@@ -426,21 +426,40 @@
 
     /* 画廊 */
     .portfolio-wall, .shuxia-wall {
-      display: flex; gap: 20px; margin-top: 34px;
+      display: flex; gap: 22px; margin-top: 34px;
       overflow-x: auto; overflow-y: hidden;
       scroll-snap-type: x proximity; scroll-padding-inline: 2px;
-      padding: 2px 2px 16px;
-      scrollbar-width: thin; scrollbar-color: var(--hair) transparent;
+      padding: 30px 4px 30px;
+      cursor: grab;
+      scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
-    .portfolio-wall::-webkit-scrollbar, .shuxia-wall::-webkit-scrollbar { height: 3px; }
-    .portfolio-wall::-webkit-scrollbar-track, .shuxia-wall::-webkit-scrollbar-track { background: transparent; }
-    .portfolio-wall::-webkit-scrollbar-thumb, .shuxia-wall::-webkit-scrollbar-thumb { background: var(--hair); border-radius: 999px; }
+    .portfolio-wall::-webkit-scrollbar, .shuxia-wall::-webkit-scrollbar { display: none; }
+    .portfolio-wall.dragging, .shuxia-wall.dragging {
+      cursor: grabbing; scroll-snap-type: none; scroll-behavior: auto; user-select: none;
+    }
+    .portfolio-wall.dragging img, .shuxia-wall.dragging img { pointer-events: none; }
+    /* 聚焦：悬停某张时，其余轻微退场 */
+    .portfolio-wall.focusing .portfolio-frame:not(.tilt),
+    .shuxia-wall.focusing .portfolio-frame:not(.tilt) {
+      opacity: .42; filter: saturate(.55) brightness(.66);
+    }
+    /* 滚动进度条 */
+    .wall-progress {
+      position: relative; height: 2px; margin: 12px 2px 0; border-radius: 2px;
+      background: var(--hair-2); overflow: hidden;
+    }
+    .wall-progress span {
+      position: absolute; inset: 0; transform-origin: left; transform: scaleX(0);
+      background: linear-gradient(90deg, rgba(200,165,95,.5), var(--gold));
+      border-radius: 2px; will-change: transform;
+    }
 
     .portfolio-frame {
-      position: relative; display: block; border-radius: 10px; overflow: hidden;
+      position: relative; display: block; border-radius: 12px; overflow: hidden;
       border: 1px solid var(--hair-2); background: #04060b;
-      transition: transform .6s var(--ease), border-color .6s ease, filter .6s ease;
+      transform-style: preserve-3d; will-change: transform;
+      transition: transform .55s var(--ease), border-color .55s ease, filter .55s ease, box-shadow .55s ease, opacity .55s ease;
       filter: saturate(.94) brightness(.96);
     }
     .portfolio-frame img {
@@ -449,9 +468,22 @@
       transition: transform .8s var(--ease);
     }
     .portfolio-frame::after {
-      content: ""; position: absolute; inset: 0; pointer-events: none;
+      content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
       background: radial-gradient(ellipse at center, transparent 58%, rgba(2,3,6,.42) 100%);
       opacity: .8; transition: opacity .5s ease;
+    }
+    /* 光泽：随指针移动的高光 */
+    .portfolio-frame::before {
+      content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+      background: radial-gradient(220px circle at var(--mx,50%) var(--my,50%), rgba(255,246,224,.22), transparent 62%);
+      opacity: 0; transition: opacity .4s ease; mix-blend-mode: soft-light;
+    }
+    .portfolio-frame.tilt::before { opacity: 1; }
+    .portfolio-frame.tilt {
+      transition: transform .12s ease-out, box-shadow .3s ease, border-color .3s ease, filter .3s ease;
+      border-color: var(--gold-line); z-index: 6;
+      filter: saturate(1.06) brightness(1.05);
+      box-shadow: 0 34px 70px rgba(0,0,0,.55), 0 0 46px rgba(200,165,95,.16);
     }
     .portfolio-caption {
       position: absolute; left: 14px; right: 14px; bottom: 12px; z-index: 2;
@@ -463,17 +495,22 @@
       content: ""; position: absolute; inset: -20px -14px 0; z-index: -1;
       background: linear-gradient(to top, rgba(2,3,6,.7), transparent);
     }
-    .portfolio-frame:hover { filter: saturate(1) brightness(1.02); border-color: var(--hair); }
-    .portfolio-frame:hover img { transform: scale(1.03); }
-    .portfolio-frame:hover::after { opacity: .5; }
+    .portfolio-frame.tilt::after { opacity: .4; }
+    .portfolio-frame.tilt .portfolio-caption,
     .portfolio-frame:hover .portfolio-caption { opacity: 1; transform: translateY(0); color: var(--ink); }
+    /* 无 JS / 触摸设备的降级悬停 */
+    .portfolio-frame:hover { border-color: var(--hair); }
 
     .portfolio-wall .image-card, .shuxia-wall .image-card {
       flex: 0 0 clamp(240px, 23vw, 320px); height: clamp(340px, 42vw, 500px);
       scroll-snap-align: start;
     }
-    .portfolio-wall .image-card:hover, .shuxia-wall .image-card:hover {
-      transform: translateY(-6px);
+    /* 入场错落 */
+    .portfolio-frame.will-in { opacity: 0; transform: translateY(46px) scale(.94); }
+    .portfolio-frame.will-in.in {
+      opacity: 1; transform: none;
+      transition: opacity .8s var(--ease), transform .95s var(--ease);
+      transition-delay: calc(var(--i, 0) * .07s);
     }
 
     .product-note {
@@ -725,6 +762,72 @@
     .modal-close:hover { border-color: var(--gold-line); color: var(--gold); background: var(--gold-soft); }
     @media (prefers-reduced-motion: reduce) {
       .toast .check path { stroke-dashoffset: 0; }
+    }
+
+    /* ============================================================
+       LIGHTBOX —— 全屏图片查看
+       ============================================================ */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 1300;
+      display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center;
+      opacity: 0; visibility: hidden;
+      transition: opacity .45s var(--ease), visibility .45s;
+    }
+    .lightbox.open { opacity: 1; visibility: visible; }
+    .lb-backdrop {
+      position: absolute; inset: 0;
+      background: rgba(2,3,6,.88);
+      backdrop-filter: blur(22px) saturate(1.2); -webkit-backdrop-filter: blur(22px) saturate(1.2);
+    }
+    .lb-stage {
+      grid-column: 2; position: relative; z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 20px;
+      padding: 24px; max-width: min(1080px, 92vw); margin: 0 auto;
+      touch-action: pan-y;
+    }
+    .lb-stage img {
+      max-width: 100%; max-height: 78vh; object-fit: contain;
+      border-radius: 12px; background: #05070c;
+      box-shadow: 0 50px 130px rgba(0,0,0,.65), 0 0 70px rgba(200,165,95,.08);
+    }
+    .lb-stage img.swap { animation: lbIn .55s var(--ease); }
+    @keyframes lbIn {
+      from { opacity: 0; transform: scale(.94) translateY(14px); filter: blur(8px); }
+      to   { opacity: 1; transform: none; filter: blur(0); }
+    }
+    .lightbox.open .lb-stage { animation: lbRise .5s var(--ease); }
+    @keyframes lbRise { from { transform: translateY(18px); } to { transform: none; } }
+    .lb-stage figcaption {
+      color: var(--ink-2); font-size: 13px; letter-spacing: .06em; text-align: center;
+      font-family: "Inter", sans-serif;
+    }
+    .lb-nav {
+      position: relative; z-index: 2; margin: 0 clamp(6px, 2vw, 26px);
+      width: 56px; height: 56px; border-radius: 50%;
+      border: 1px solid var(--hair); background: rgba(255,255,255,.03); color: var(--ink);
+      font-size: 24px; line-height: 1; cursor: pointer; display: grid; place-items: center;
+      backdrop-filter: blur(10px); transition: border-color .3s ease, color .3s ease, background .3s ease, transform .3s ease;
+    }
+    .lb-prev { grid-column: 1; } .lb-next { grid-column: 3; }
+    .lb-nav:hover { border-color: var(--gold-line); color: var(--gold); background: var(--gold-soft); transform: scale(1.08); }
+    .lb-close {
+      position: absolute; top: 24px; right: 24px; z-index: 4;
+      width: 42px; height: 42px; border-radius: 50%;
+      border: 1px solid var(--hair); background: rgba(255,255,255,.03); color: var(--ink-2);
+      font-size: 20px; cursor: pointer; display: grid; place-items: center;
+      transition: border-color .3s ease, color .3s ease, transform .3s ease;
+    }
+    .lb-close:hover { border-color: var(--gold-line); color: var(--gold); transform: rotate(90deg); }
+    .lb-counter {
+      position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); z-index: 4;
+      font-family: "Cormorant Garamond", serif; font-style: italic;
+      color: var(--ink-3); letter-spacing: .12em; font-size: 16px;
+    }
+    .lb-counter b { color: var(--gold); font-weight: 400; }
+    @media (max-width: 900px) {
+      .lb-nav { width: 44px; height: 44px; font-size: 20px; margin: 0 6px; }
+      .lb-close { top: 14px; right: 14px; }
+      .lb-stage img { max-height: 68vh; }
     }
   </style>
 </head>
@@ -1220,21 +1323,155 @@
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
     })();
 
-    // 画廊：竖向滚轮驱动横向
-    document.querySelectorAll('.shuxia-wall, .portfolio-wall').forEach((gallery) => {
-      gallery.addEventListener('wheel', (event) => {
-        if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
-        const maxScroll = gallery.scrollWidth - gallery.clientWidth;
-        if (maxScroll <= 0) return;
-        const next = Math.min(maxScroll, Math.max(0, gallery.scrollLeft + event.deltaY));
-        const atStart = gallery.scrollLeft <= 1;
-        const atEnd = gallery.scrollLeft >= maxScroll - 1;
-        if ((!atStart && event.deltaY < 0) || (!atEnd && event.deltaY > 0)) {
-          event.preventDefault();
-          gallery.scrollLeft = next;
+    // ============================================================
+    // 画廊增强：拖拽惯性 · 3D 指针倾斜 · 聚焦光泽 · 进度条 · 入场错落 · 灯箱
+    // ============================================================
+    (() => {
+      const fine = window.matchMedia('(pointer: fine)').matches;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const walls = document.querySelectorAll('.shuxia-wall, .portfolio-wall');
+      if (!walls.length) return;
+
+      /* ---------- 共享灯箱 ---------- */
+      const lb = document.createElement('div');
+      lb.className = 'lightbox';
+      lb.setAttribute('role', 'dialog');
+      lb.setAttribute('aria-modal', 'true');
+      lb.innerHTML =
+        '<div class="lb-backdrop" data-close></div>' +
+        '<button class="lb-nav lb-prev" aria-label="上一张">&#8249;</button>' +
+        '<figure class="lb-stage"><img alt=""><figcaption></figcaption></figure>' +
+        '<button class="lb-nav lb-next" aria-label="下一张">&#8250;</button>' +
+        '<button class="lb-close" data-close aria-label="关闭">&times;</button>' +
+        '<div class="lb-counter"></div>';
+      document.body.appendChild(lb);
+      const lbImg = lb.querySelector('img');
+      const lbCap = lb.querySelector('figcaption');
+      const lbCounter = lb.querySelector('.lb-counter');
+      let lbList = [], lbIndex = 0;
+      const pad = (n) => String(n).padStart(2, '0');
+
+      function renderLb() {
+        const item = lbList[lbIndex]; if (!item) return;
+        lbImg.classList.remove('swap'); void lbImg.offsetWidth; lbImg.classList.add('swap');
+        lbImg.src = item.src; lbImg.alt = item.alt || '';
+        lbCap.textContent = item.caption || item.alt || '';
+        lbCap.style.display = lbCap.textContent ? '' : 'none';
+        lbCounter.innerHTML = '<b>' + pad(lbIndex + 1) + '</b> / ' + pad(lbList.length);
+        [lbIndex + 1, lbIndex - 1].forEach((i) => {
+          const it = lbList[(i + lbList.length) % lbList.length];
+          if (it) { const im = new Image(); im.src = it.src; }
+        });
+      }
+      function openLb(list, i) { lbList = list; lbIndex = i; renderLb(); lb.classList.add('open'); document.body.style.overflow = 'hidden'; }
+      function closeLb() { lb.classList.remove('open'); document.body.style.overflow = ''; }
+      function step(d) { lbIndex = (lbIndex + d + lbList.length) % lbList.length; renderLb(); }
+      lb.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeLb));
+      lb.querySelector('.lb-next').addEventListener('click', () => step(1));
+      lb.querySelector('.lb-prev').addEventListener('click', () => step(-1));
+      document.addEventListener('keydown', (e) => {
+        if (!lb.classList.contains('open')) return;
+        if (e.key === 'Escape') closeLb();
+        else if (e.key === 'ArrowRight') step(1);
+        else if (e.key === 'ArrowLeft') step(-1);
+      });
+      let sx = 0;
+      const stage = lb.querySelector('.lb-stage');
+      stage.addEventListener('pointerdown', (e) => { sx = e.clientX; });
+      stage.addEventListener('pointerup', (e) => { const dx = e.clientX - sx; if (Math.abs(dx) > 60) step(dx < 0 ? 1 : -1); });
+
+      /* ---------- 每个 wall ---------- */
+      walls.forEach((wall) => {
+        const frames = Array.from(wall.querySelectorAll('.portfolio-frame'));
+        if (!frames.length) return;
+        const list = frames.map((f) => {
+          const img = f.querySelector('img');
+          const cap = f.querySelector('.portfolio-caption');
+          return { src: img.getAttribute('src'), alt: img.getAttribute('alt') || '', caption: cap ? cap.textContent.trim() : '' };
+        });
+
+        // 进度条
+        const prog = document.createElement('div');
+        prog.className = 'wall-progress'; prog.innerHTML = '<span></span>';
+        const bar = prog.firstChild;
+        wall.after(prog);
+        const updateProg = () => {
+          const max = wall.scrollWidth - wall.clientWidth;
+          bar.style.transform = 'scaleX(' + (max > 0 ? Math.max(wall.scrollLeft / max, 0.015) : 0.015) + ')';
+        };
+        updateProg();
+        wall.addEventListener('scroll', updateProg, { passive: true });
+        window.addEventListener('resize', updateProg);
+
+        // 入场错落
+        if (!reduce) {
+          frames.forEach((f, i) => { f.classList.add('will-in'); f.style.setProperty('--i', i); });
+          const io2 = new IntersectionObserver((ents) => {
+            ents.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io2.unobserve(en.target); } });
+          }, { threshold: 0.15 });
+          frames.forEach((f) => io2.observe(f));
         }
-      }, { passive: false });
-    });
+
+        // 拖拽惯性
+        let down = false, moved = false, startX = 0, startLeft = 0, lastX = 0, vel = 0, raf = 0;
+        wall.addEventListener('pointerdown', (e) => {
+          if (e.pointerType === 'mouse' && e.button !== 0) return;
+          down = true; moved = false; startX = e.clientX; lastX = e.clientX; startLeft = wall.scrollLeft; vel = 0;
+          cancelAnimationFrame(raf); wall.classList.add('dragging');
+        });
+        wall.addEventListener('pointermove', (e) => {
+          if (!down) return;
+          const dx = e.clientX - startX;
+          if (Math.abs(dx) > 4) moved = true;
+          wall.scrollLeft = startLeft - dx;
+          vel = e.clientX - lastX; lastX = e.clientX;
+        });
+        const release = () => {
+          if (!down) return; down = false; wall.classList.remove('dragging');
+          let v = vel * 14;
+          (function decay() { if (Math.abs(v) < 0.4) return; wall.scrollLeft -= v; v *= 0.92; raf = requestAnimationFrame(decay); })();
+        };
+        wall.addEventListener('pointerup', release);
+        wall.addEventListener('pointercancel', release);
+
+        // 竖向滚轮驱动横向
+        wall.addEventListener('wheel', (event) => {
+          if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+          const maxScroll = wall.scrollWidth - wall.clientWidth;
+          if (maxScroll <= 0) return;
+          const next = Math.min(maxScroll, Math.max(0, wall.scrollLeft + event.deltaY));
+          const atStart = wall.scrollLeft <= 1, atEnd = wall.scrollLeft >= maxScroll - 1;
+          if ((!atStart && event.deltaY < 0) || (!atEnd && event.deltaY > 0)) { event.preventDefault(); wall.scrollLeft = next; }
+        }, { passive: false });
+
+        // 每帧：3D 倾斜 + 光泽 + 聚焦 + 点击开灯箱
+        frames.forEach((frame, idx) => {
+          frame.style.cursor = 'pointer';
+          if (fine && !reduce) {
+            frame.addEventListener('pointermove', (e) => {
+              if (down) return;
+              const r = frame.getBoundingClientRect();
+              const px = (e.clientX - r.left) / r.width;
+              const py = (e.clientY - r.top) / r.height;
+              frame.classList.add('tilt'); wall.classList.add('focusing');
+              frame.style.transform =
+                'perspective(1000px) rotateX(' + ((0.5 - py) * 11).toFixed(2) + 'deg) rotateY(' +
+                ((px - 0.5) * 13).toFixed(2) + 'deg) translateZ(10px) scale(1.035)';
+              frame.style.setProperty('--mx', (px * 100).toFixed(1) + '%');
+              frame.style.setProperty('--my', (py * 100).toFixed(1) + '%');
+            });
+            frame.addEventListener('pointerleave', () => {
+              frame.classList.remove('tilt'); wall.classList.remove('focusing');
+              frame.style.transform = '';
+            });
+          }
+          frame.addEventListener('click', (e) => {
+            if (moved) { e.preventDefault(); return; }
+            openLb(list, idx);
+          });
+        });
+      });
+    })();
   </script>
 </body>
 </html>
