@@ -182,138 +182,79 @@
       overflow: hidden;
     }
     /* ============================================================
-       ✦ 土星：球体 + 分层环系（含卡西尼缝、前后遮挡、投影）
+       ✦ 天体：一团光 + 一组发丝星环
+       原则：它是「光」不是「物体」——柔边、半透明、沉在最底层；
+       环全部保持 1px 发丝语言，靠倾角差 / 速度差 / 进动产生华丽感。
        ============================================================ */
     .celestial {
       position: absolute; z-index: -2;
-      top: 10%; right: -10%;
-      width: min(54vw, 720px); aspect-ratio: 1;
+      top: 11%; right: -8%;
+      width: min(50vw, 680px); aspect-ratio: 1;
       pointer-events: none;
-      opacity: .92;
     }
-    .saturn {
-      position: absolute; inset: 0;
-      display: grid; place-items: center;
-      animation: sysBreathe 22s ease-in-out infinite alternate;
-    }
-    @keyframes sysBreathe { to { transform: scale(1.035); } }
-
-    /* --- 球体 --- */
-    .globe {
-      position: relative; z-index: 2;
-      width: 44%; aspect-ratio: 1; border-radius: 50%;
-      background:
-        radial-gradient(circle at 33% 28%,
-          #fff8ea 0%, #f6e3ba 10%, #e3c489 24%,
-          #c9a05c 42%, #9d7538 60%, #5e4520 78%, #241a0b 94%);
-      box-shadow:
-        inset -22px -14px 52px rgba(0,0,0,.62),
-        inset 14px 10px 34px rgba(255,244,214,.16),
-        0 0 90px rgba(200,165,95,.26),
-        0 0 180px rgba(200,165,95,.1);
-    }
-    /* 云带 */
-    .globe::before {
-      content: ""; position: absolute; inset: 0; border-radius: 50%;
-      background: repeating-linear-gradient(174deg,
-        rgba(255,244,214,.09) 0 5px,
-        rgba(120,88,42,.10) 5px 11px,
-        rgba(255,238,200,.05) 11px 15px,
-        rgba(96,70,32,.09) 15px 22px);
-      mix-blend-mode: overlay; opacity: .62;
-    }
-    /* 明暗界线 + 边缘暗化 */
-    .globe::after {
-      content: ""; position: absolute; inset: 0; border-radius: 50%;
-      background:
-        radial-gradient(circle at 30% 25%, transparent 34%, rgba(0,0,0,.42) 72%, rgba(0,0,0,.72) 100%),
-        radial-gradient(circle at 78% 82%, rgba(140,190,220,.07), transparent 42%);
-    }
-
-    /* --- 环系 --- */
-    .ring-plane {
-      position: absolute; left: 50%; top: 50%;
-      width: 100%; aspect-ratio: 1;
-      transform: translate(-50%, -50%) rotate(-17deg) scaleY(.30);
-      transform-origin: center;
-    }
-    .ring-plane.back  { z-index: 1; }
-    .ring-plane.front { z-index: 3; clip-path: inset(50% 0 0 0); }
-
-    .ring-tex {
+    /* 柔光核心：以 transparent 收边，融进背景 */
+    .celestial .disc {
       position: absolute; inset: 0; border-radius: 50%;
       background:
-        /* 细密颗粒带 */
-        repeating-radial-gradient(circle at 50% 50%,
-          rgba(240,222,182,.00) 0 2px,
-          rgba(240,222,182,.26) 2px 4px,
-          rgba(200,165,95,.17) 4px 7px,
-          rgba(255,246,224,.09) 7px 9px,
-          rgba(150,118,62,.13) 9px 13px),
-        /* 疏密变化：让旋转看得见 */
-        conic-gradient(from 0deg,
-          rgba(255,248,228,.18), rgba(255,248,228,.04) 18%,
-          rgba(255,248,228,.20) 38%, rgba(255,248,228,.05) 58%,
-          rgba(255,248,228,.16) 78%, rgba(255,248,228,.18) 100%);
-      /* 环带 + 卡西尼缝 */
-      -webkit-mask: radial-gradient(closest-side,
-        transparent 0 52%, #000 54%, #000 66.5%,
-        transparent 68%, transparent 71%,
-        #000 72.5%, #000 89%, transparent 96%);
-      mask: radial-gradient(closest-side,
-        transparent 0 52%, #000 54%, #000 66.5%,
-        transparent 68%, transparent 71%,
-        #000 72.5%, #000 89%, transparent 96%);
-      animation: ringSpin 84s linear infinite;
+        radial-gradient(circle at 34% 30%,
+          rgba(255,246,224,.9), rgba(200,165,95,.5) 20%,
+          rgba(120,92,44,.28) 46%, transparent 68%);
+      filter: blur(.4px);
+      box-shadow: 0 0 140px 20px rgba(200,165,95,.12), inset 0 0 80px rgba(120,92,44,.2);
+      opacity: .52;
+      animation: breathe 16s ease-in-out infinite alternate;
+    }
+    @keyframes breathe { to { transform: scale(1.05); opacity: .64; } }
+
+    /* 发丝环：每道环有各自的倾角、扁率、速度与方向 */
+    .celestial .ring {
+      --r0: -24deg; --sy: .34;
+      position: absolute; inset: -14%;
+      border: 1px solid rgba(244,239,228,.11);
+      border-radius: 50%;
+      transform: rotate(var(--r0)) scaleY(var(--sy));
+      animation: precess 64s linear infinite;
       will-change: transform;
     }
-    /* 外层稀薄环，转速更慢（开普勒：越外越慢） */
-    .ring-tex.outer {
-      background:
-        repeating-radial-gradient(circle at 50% 50%,
-          rgba(226,236,240,.00) 0 3px,
-          rgba(226,236,240,.13) 3px 5px,
-          rgba(185,203,214,.07) 5px 10px),
-        conic-gradient(from 90deg,
-          rgba(226,236,240,.10), rgba(226,236,240,.02) 30%,
-          rgba(226,236,240,.12) 62%, rgba(226,236,240,.10) 100%);
-      -webkit-mask: radial-gradient(closest-side, transparent 0 91%, #000 93%, #000 97%, transparent 100%);
-      mask: radial-gradient(closest-side, transparent 0 91%, #000 93%, #000 97%, transparent 100%);
-      animation-duration: 150s;
-      opacity: .8;
+    /* 进动：旋转施加在压扁的椭圆上 → 环面像陀螺仪缓缓翻转 */
+    @keyframes precess {
+      from { transform: rotate(var(--r0)) scaleY(var(--sy)); }
+      to   { transform: rotate(calc(var(--r0) + 360deg)) scaleY(var(--sy)); }
     }
-    @keyframes ringSpin { to { transform: rotate(360deg); } }
-
-    /* 行星投在环上的阴影（右下方，与左上光源相反） */
-    .ring-shadow {
-      position: absolute; inset: 0; border-radius: 50%;
-      background: conic-gradient(from 118deg,
-        rgba(0,0,0,.62) 0deg, rgba(0,0,0,.5) 26deg,
-        transparent 62deg, transparent 320deg, rgba(0,0,0,.42) 360deg);
-      -webkit-mask: radial-gradient(closest-side, transparent 0 52%, #000 54%, #000 92%, transparent 97%);
-      mask: radial-gradient(closest-side, transparent 0 52%, #000 54%, #000 92%, transparent 97%);
-      filter: blur(4px);
+    .celestial .ring.r2 {
+      --r0: 14deg; --sy: .22; inset: -27%;
+      border-color: rgba(200,165,95,.13);
+      animation-duration: 96s; animation-direction: reverse;
     }
-
-    /* 环面弥散辉光 */
-    .ring-glow {
-      z-index: 4; border-radius: 50%;
-      background: radial-gradient(closest-side, transparent 62%, rgba(224,205,163,.1) 78%, transparent 94%);
-      filter: blur(9px); pointer-events: none;
+    .celestial .ring.r3 {
+      --r0: -54deg; --sy: .46; inset: -3%;
+      border-color: rgba(185,203,214,.08);
+      animation-duration: 78s;
     }
-
-    /* 卫星：轨道在倾斜平面内自转，避免覆盖基础 transform */
-    .moon-plane { z-index: 3; width: 120%; }
-    .moon-orbit {
-      position: absolute; inset: 0;
-      animation: ringSpin 46s linear infinite;
-      will-change: transform;
+    .celestial .ring.r4 {
+      --r0: 38deg; --sy: .15; inset: -38%;
+      border-color: rgba(244,239,228,.06);
+      animation-duration: 132s; animation-direction: reverse;
     }
-    .moon {
-      position: absolute; top: 50%; left: -4px; margin-top: -4px;
-      width: 8px; height: 8px; border-radius: 50%;
-      background: radial-gradient(circle at 34% 32%, #fff6e0, #b99a5e 55%, #4a381a);
-      box-shadow: 0 0 16px rgba(233,214,170,.6);
+    /* 一道带光泽的环：转动时明暗扫过，让「在转」被看见 */
+    .celestial .ring.sheen {
+      --r0: -12deg; --sy: .28; inset: -21%;
+      border: 0;
+      background: conic-gradient(from 0deg,
+        transparent 0deg, rgba(223,203,150,.30) 54deg, transparent 128deg,
+        transparent 232deg, rgba(223,203,150,.18) 292deg, transparent 350deg);
+      -webkit-mask: radial-gradient(closest-side, transparent 0 98.2%, #000 98.7%);
+      mask: radial-gradient(closest-side, transparent 0 98.2%, #000 98.7%);
+      animation-duration: 86s;
+    }
+    /* 环上的微光点：反向缩放抵消压扁，保持圆形 */
+    .celestial .ring > i {
+      position: absolute; top: 50%; left: 0;
+      width: 5px; height: 5px; margin: -2.5px 0 0 -2.5px;
+      border-radius: 50%;
+      background: rgba(255,246,224,.92);
+      box-shadow: 0 0 12px rgba(223,195,124,.75), 0 0 26px rgba(223,195,124,.35);
+      transform: scaleY(calc(1 / var(--sy)));
     }
 
     .hero-inner { position: relative; width: 100%; }
@@ -836,6 +777,7 @@
     }
     .modal-card {
       position: relative; z-index: 1; width: min(340px, 86vw);
+      max-height: 92vh; overflow-y: auto;
       padding: 40px 34px 32px; text-align: center;
       border-radius: 22px; border: 1px solid var(--hair);
       background:
@@ -847,15 +789,20 @@
     }
     .modal.open .modal-card { transform: none; }
     .modal-card .kicker { justify-content: center; margin-bottom: 24px; }
+    /* 自适应任意长宽比：正方形截图或长方形名片图都能完整、居中显示 */
     .qr {
-      width: 208px; height: 208px; margin: 0 auto 24px;
+      width: min(228px, 62vw); margin: 0 auto 24px;
       border-radius: 16px; overflow: hidden;
-      border: 1px solid var(--hair); background: #fdfcf9; padding: 12px;
-      display: grid; place-items: center;
+      border: 1px solid var(--hair); background: #fdfcf9; padding: 10px;
       box-shadow: 0 0 40px rgba(200,165,95,.1);
     }
-    .qr img { width: 100%; height: 100%; object-fit: contain; display: block; }
-    .qr-fallback { color: #555; font-size: 12.5px; line-height: 1.7; letter-spacing: .02em; }
+    .qr img { display: block; width: 100%; height: auto; border-radius: 8px; }
+    .qr-fallback {
+      color: #555; font-size: 12.5px; line-height: 1.7; letter-spacing: .02em;
+      padding: 46px 10px; text-align: center;
+    }
+    /* 矮屏时整体收窄，避免弹窗超出视口 */
+    @media (max-height: 780px) { .qr { width: min(188px, 54vw); } }
     .modal-card .wid {
       font-family: "Cormorant Garamond", serif; font-style: italic;
       font-size: 23px; color: var(--gold); letter-spacing: .02em; margin-bottom: 8px;
@@ -1138,23 +1085,13 @@
 
   <section class="hero" id="top">
     <div class="celestial">
-      <div class="saturn">
-        <!-- 环的后半：位于球体之后 -->
-        <div class="ring-plane back">
-          <div class="ring-tex"></div>
-          <div class="ring-tex outer"></div>
-        </div>
-        <!-- 球体 -->
-        <div class="globe"></div>
-        <!-- 环的前半：越过球体前方 -->
-        <div class="ring-plane front">
-          <div class="ring-tex"></div>
-          <div class="ring-tex outer"></div>
-          <div class="ring-shadow"></div>
-        </div>
-        <div class="ring-plane ring-glow"></div>
-        <div class="ring-plane moon-plane"><div class="moon-orbit"><span class="moon"></span></div></div>
-      </div>
+      <!-- 部分环沉在光晕之后，部分掠过光晕之前 → 交织出深度 -->
+      <div class="ring r4"></div>
+      <div class="ring r2"><i></i></div>
+      <div class="disc"></div>
+      <div class="ring r3"></div>
+      <div class="ring"><i></i></div>
+      <div class="ring sheen"></div>
     </div>
 
     <div class="hero-inner reveal">
@@ -1730,8 +1667,13 @@
       stage.addEventListener('pointerdown', (e) => { sx = e.clientX; });
       stage.addEventListener('pointerup', (e) => { const dx = e.clientX - sx; if (Math.abs(dx) > 60) step(dx < 0 ? 1 : -1); });
 
-      /* ---------- 每个 wall ---------- */
+      /* ---------- 每个 wall（相互隔离：任一出错不影响其它画廊） ---------- */
       walls.forEach((wall) => {
+        try { setupWall(wall); }
+        catch (err) { console.error('[gallery] setup failed for', wall.className, err); }
+      });
+
+      function setupWall(wall) {
         const frames = Array.from(wall.querySelectorAll('.portfolio-frame'));
         if (!frames.length) return;
         const list = frames.map((f) => {
@@ -1794,6 +1736,14 @@
         wall.addEventListener('pointerup', release);
         wall.addEventListener('pointercancel', release);
 
+        // 触控板的横滑是大量细碎增量，scroll-snap 会把它们不断吸回原位 → 交互期间临时关闭吸附
+        let snapTimer;
+        function suspendSnap() {
+          wall.style.scrollSnapType = 'none';
+          clearTimeout(snapTimer);
+          snapTimer = setTimeout(() => { wall.style.scrollSnapType = ''; }, 260);
+        }
+
         // 滚轮 / 触控板：横向手势直接驱动，纵向滚轮转为横向
         wall.addEventListener('wheel', (event) => {
           const maxScroll = wall.scrollWidth - wall.clientWidth;
@@ -1801,9 +1751,11 @@
           // 触控板两指横滑：自己消费，避免被全局平滑滚动吞掉，也阻止浏览器「前进/后退」手势
           if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
             event.preventDefault();
+            suspendSnap();
             wall.scrollLeft += event.deltaX;
             return;
           }
+          suspendSnap();
           const next = Math.min(maxScroll, Math.max(0, wall.scrollLeft + event.deltaY));
           const atStart = wall.scrollLeft <= 1, atEnd = wall.scrollLeft >= maxScroll - 1;
           if ((!atStart && event.deltaY < 0) || (!atEnd && event.deltaY > 0)) { event.preventDefault(); wall.scrollLeft = next; }
@@ -1835,7 +1787,7 @@
             openLb(list, idx);
           });
         });
-      });
+      }
     })();
     // ============================================================
     // ✦ 惯性平滑滚动（桌面端）
