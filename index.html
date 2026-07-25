@@ -181,31 +181,140 @@
       padding: 160px var(--gutter) 120px;
       overflow: hidden;
     }
-    /* 单一天体：一枚安静发光的行星，取代此前的多重轨道 */
+    /* ============================================================
+       ✦ 土星：球体 + 分层环系（含卡西尼缝、前后遮挡、投影）
+       ============================================================ */
     .celestial {
       position: absolute; z-index: -2;
-      top: 12%; right: -6%;
-      width: min(46vw, 620px); aspect-ratio: 1;
+      top: 10%; right: -10%;
+      width: min(54vw, 720px); aspect-ratio: 1;
       pointer-events: none;
+      opacity: .92;
     }
-    .celestial .disc {
+    .saturn {
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      animation: sysBreathe 22s ease-in-out infinite alternate;
+    }
+    @keyframes sysBreathe { to { transform: scale(1.035); } }
+
+    /* --- 球体 --- */
+    .globe {
+      position: relative; z-index: 2;
+      width: 44%; aspect-ratio: 1; border-radius: 50%;
+      background:
+        radial-gradient(circle at 33% 28%,
+          #fff8ea 0%, #f6e3ba 10%, #e3c489 24%,
+          #c9a05c 42%, #9d7538 60%, #5e4520 78%, #241a0b 94%);
+      box-shadow:
+        inset -22px -14px 52px rgba(0,0,0,.62),
+        inset 14px 10px 34px rgba(255,244,214,.16),
+        0 0 90px rgba(200,165,95,.26),
+        0 0 180px rgba(200,165,95,.1);
+    }
+    /* 云带 */
+    .globe::before {
+      content: ""; position: absolute; inset: 0; border-radius: 50%;
+      background: repeating-linear-gradient(174deg,
+        rgba(255,244,214,.09) 0 5px,
+        rgba(120,88,42,.10) 5px 11px,
+        rgba(255,238,200,.05) 11px 15px,
+        rgba(96,70,32,.09) 15px 22px);
+      mix-blend-mode: overlay; opacity: .62;
+    }
+    /* 明暗界线 + 边缘暗化 */
+    .globe::after {
+      content: ""; position: absolute; inset: 0; border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 25%, transparent 34%, rgba(0,0,0,.42) 72%, rgba(0,0,0,.72) 100%),
+        radial-gradient(circle at 78% 82%, rgba(140,190,220,.07), transparent 42%);
+    }
+
+    /* --- 环系 --- */
+    .ring-plane {
+      position: absolute; left: 50%; top: 50%;
+      width: 100%; aspect-ratio: 1;
+      transform: translate(-50%, -50%) rotate(-17deg) scaleY(.30);
+      transform-origin: center;
+    }
+    .ring-plane.back  { z-index: 1; }
+    .ring-plane.front { z-index: 3; clip-path: inset(50% 0 0 0); }
+
+    .ring-tex {
       position: absolute; inset: 0; border-radius: 50%;
       background:
-        radial-gradient(circle at 34% 30%, rgba(255,246,224,.9), rgba(200,165,95,.5) 20%, rgba(120,92,44,.28) 46%, transparent 68%);
-      filter: blur(.4px);
-      box-shadow: 0 0 140px 20px rgba(200,165,95,.12), inset 0 0 80px rgba(120,92,44,.2);
-      opacity: .5;
-      animation: breathe 16s ease-in-out infinite alternate;
+        /* 细密颗粒带 */
+        repeating-radial-gradient(circle at 50% 50%,
+          rgba(240,222,182,.00) 0 2px,
+          rgba(240,222,182,.26) 2px 4px,
+          rgba(200,165,95,.17) 4px 7px,
+          rgba(255,246,224,.09) 7px 9px,
+          rgba(150,118,62,.13) 9px 13px),
+        /* 疏密变化：让旋转看得见 */
+        conic-gradient(from 0deg,
+          rgba(255,248,228,.18), rgba(255,248,228,.04) 18%,
+          rgba(255,248,228,.20) 38%, rgba(255,248,228,.05) 58%,
+          rgba(255,248,228,.16) 78%, rgba(255,248,228,.18) 100%);
+      /* 环带 + 卡西尼缝 */
+      -webkit-mask: radial-gradient(closest-side,
+        transparent 0 52%, #000 54%, #000 66.5%,
+        transparent 68%, transparent 71%,
+        #000 72.5%, #000 89%, transparent 96%);
+      mask: radial-gradient(closest-side,
+        transparent 0 52%, #000 54%, #000 66.5%,
+        transparent 68%, transparent 71%,
+        #000 72.5%, #000 89%, transparent 96%);
+      animation: ringSpin 84s linear infinite;
+      will-change: transform;
     }
-    .celestial .ring {
-      position: absolute; inset: -14%; border-radius: 50%;
-      border: 1px solid rgba(244,239,228,.07);
-      transform: rotate(-24deg) scaleY(.34);
-      animation: ringspin 60s linear infinite;
+    /* 外层稀薄环，转速更慢（开普勒：越外越慢） */
+    .ring-tex.outer {
+      background:
+        repeating-radial-gradient(circle at 50% 50%,
+          rgba(226,236,240,.00) 0 3px,
+          rgba(226,236,240,.13) 3px 5px,
+          rgba(185,203,214,.07) 5px 10px),
+        conic-gradient(from 90deg,
+          rgba(226,236,240,.10), rgba(226,236,240,.02) 30%,
+          rgba(226,236,240,.12) 62%, rgba(226,236,240,.10) 100%);
+      -webkit-mask: radial-gradient(closest-side, transparent 0 91%, #000 93%, #000 97%, transparent 100%);
+      mask: radial-gradient(closest-side, transparent 0 91%, #000 93%, #000 97%, transparent 100%);
+      animation-duration: 150s;
+      opacity: .8;
     }
-    .celestial .ring.two { inset: -30%; border-color: rgba(185,203,214,.05); transform: rotate(-24deg) scaleY(.28); animation-duration: 96s; }
-    @keyframes breathe { to { transform: scale(1.05); opacity: .62; } }
-    @keyframes ringspin { to { transform: rotate(336deg) scaleY(.34); } }
+    @keyframes ringSpin { to { transform: rotate(360deg); } }
+
+    /* 行星投在环上的阴影（右下方，与左上光源相反） */
+    .ring-shadow {
+      position: absolute; inset: 0; border-radius: 50%;
+      background: conic-gradient(from 118deg,
+        rgba(0,0,0,.62) 0deg, rgba(0,0,0,.5) 26deg,
+        transparent 62deg, transparent 320deg, rgba(0,0,0,.42) 360deg);
+      -webkit-mask: radial-gradient(closest-side, transparent 0 52%, #000 54%, #000 92%, transparent 97%);
+      mask: radial-gradient(closest-side, transparent 0 52%, #000 54%, #000 92%, transparent 97%);
+      filter: blur(4px);
+    }
+
+    /* 环面弥散辉光 */
+    .ring-glow {
+      z-index: 4; border-radius: 50%;
+      background: radial-gradient(closest-side, transparent 62%, rgba(224,205,163,.1) 78%, transparent 94%);
+      filter: blur(9px); pointer-events: none;
+    }
+
+    /* 卫星：轨道在倾斜平面内自转，避免覆盖基础 transform */
+    .moon-plane { z-index: 3; width: 120%; }
+    .moon-orbit {
+      position: absolute; inset: 0;
+      animation: ringSpin 46s linear infinite;
+      will-change: transform;
+    }
+    .moon {
+      position: absolute; top: 50%; left: -4px; margin-top: -4px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: radial-gradient(circle at 34% 32%, #fff6e0, #b99a5e 55%, #4a381a);
+      box-shadow: 0 0 16px rgba(233,214,170,.6);
+    }
 
     .hero-inner { position: relative; width: 100%; }
 
@@ -432,6 +541,7 @@
       padding: 30px 4px 30px;
       cursor: grab;
       scrollbar-width: none;
+      overscroll-behavior-x: contain;   /* 横滑到边缘不触发浏览器前进/后退 */
       -webkit-overflow-scrolling: touch;
     }
     .portfolio-wall::-webkit-scrollbar, .shuxia-wall::-webkit-scrollbar { display: none; }
@@ -1028,9 +1138,23 @@
 
   <section class="hero" id="top">
     <div class="celestial">
-      <div class="ring two"></div>
-      <div class="ring"></div>
-      <div class="disc"></div>
+      <div class="saturn">
+        <!-- 环的后半：位于球体之后 -->
+        <div class="ring-plane back">
+          <div class="ring-tex"></div>
+          <div class="ring-tex outer"></div>
+        </div>
+        <!-- 球体 -->
+        <div class="globe"></div>
+        <!-- 环的前半：越过球体前方 -->
+        <div class="ring-plane front">
+          <div class="ring-tex"></div>
+          <div class="ring-tex outer"></div>
+          <div class="ring-shadow"></div>
+        </div>
+        <div class="ring-plane ring-glow"></div>
+        <div class="ring-plane moon-plane"><div class="moon-orbit"><span class="moon"></span></div></div>
+      </div>
     </div>
 
     <div class="hero-inner reveal">
@@ -1670,11 +1794,16 @@
         wall.addEventListener('pointerup', release);
         wall.addEventListener('pointercancel', release);
 
-        // 竖向滚轮驱动横向
+        // 滚轮 / 触控板：横向手势直接驱动，纵向滚轮转为横向
         wall.addEventListener('wheel', (event) => {
-          if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
           const maxScroll = wall.scrollWidth - wall.clientWidth;
           if (maxScroll <= 0) return;
+          // 触控板两指横滑：自己消费，避免被全局平滑滚动吞掉，也阻止浏览器「前进/后退」手势
+          if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+            event.preventDefault();
+            wall.scrollLeft += event.deltaX;
+            return;
+          }
           const next = Math.min(maxScroll, Math.max(0, wall.scrollLeft + event.deltaY));
           const atStart = wall.scrollLeft <= 1, atEnd = wall.scrollLeft >= maxScroll - 1;
           if ((!atStart && event.deltaY < 0) || (!atEnd && event.deltaY > 0)) { event.preventDefault(); wall.scrollLeft = next; }
@@ -1724,9 +1853,10 @@
       }
       function kick() { if (!running) { running = true; requestAnimationFrame(loop); } }
       window.addEventListener('wheel', (e) => {
-        if (e.defaultPrevented) return;                        // 画廊已消费
-        if (document.body.style.overflow === 'hidden') return;  // 灯箱 / 弹窗打开
-        if (e.ctrlKey) return;                                  // 浏览器缩放
+        if (e.defaultPrevented) return;                             // 画廊已消费
+        if (document.body.style.overflow === 'hidden') return;       // 灯箱 / 弹窗打开
+        if (e.ctrlKey) return;                                       // 浏览器缩放
+        if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;         // 横向手势：不接管
         e.preventDefault();
         const d = e.deltaMode === 1 ? e.deltaY * 18 : e.deltaY;
         target = Math.max(0, Math.min(maxY(), target + d));
