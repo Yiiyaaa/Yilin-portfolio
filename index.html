@@ -829,13 +829,185 @@
       .lb-close { top: 14px; right: 14px; }
       .lb-stage img { max-height: 68vh; }
     }
+
+    /* ============================================================
+       ✦ 开场序幕 PRELOADER
+       ============================================================ */
+    .preloader {
+      position: fixed; inset: 0; z-index: 2000;
+      display: grid; place-items: center;
+      background: var(--bg-deep);
+      transition: opacity .9s var(--ease), visibility .9s;
+    }
+    html:not(.loading) .preloader { opacity: 0; visibility: hidden; pointer-events: none; }
+    .pre-inner { text-align: center; position: relative; }
+    .pre-name {
+      font-family: "Songti SC", "STSong", serif;
+      font-size: clamp(46px, 7vw, 88px); color: var(--gold);
+      letter-spacing: .16em; line-height: 1;
+      opacity: 0; transform: translateY(14px);
+      animation: preName 1.5s var(--ease) .15s forwards;
+      text-shadow: 0 0 70px rgba(200,165,95,.3);
+    }
+    @keyframes preName { to { opacity: 1; transform: none; } }
+    .pre-sub {
+      margin-top: 20px; font-size: 10.5px; letter-spacing: .42em;
+      text-transform: uppercase; color: var(--ink-3);
+      opacity: 0; animation: preName 1.2s var(--ease) .55s forwards;
+    }
+    .pre-rail {
+      margin: 34px auto 0; width: 190px; height: 1px; background: var(--hair); overflow: hidden;
+    }
+    .pre-rail i {
+      display: block; height: 100%; width: 100%; transform-origin: left; transform: scaleX(0);
+      background: linear-gradient(90deg, rgba(200,165,95,.35), var(--gold));
+      animation: preRail 1.5s var(--ease-io) .35s forwards;
+    }
+    @keyframes preRail { to { transform: scaleX(1); } }
+    /* 幕布上升 */
+    .curtain {
+      position: fixed; inset: 0; z-index: 1999; pointer-events: none;
+      background: var(--bg-deep); transform-origin: top;
+      transform: scaleY(1); visibility: hidden;
+    }
+    html.curtain-up .curtain {
+      visibility: visible;
+      animation: curtainUp 1.15s var(--ease) forwards;
+    }
+    @keyframes curtainUp { to { transform: scaleY(0); } }
+    html.loading, html.loading body { overflow: hidden !important; }
+
+    /* ============================================================
+       ✦ 顶部滚动进度轨
+       ============================================================ */
+    .scroll-rail {
+      position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 60; pointer-events: none;
+      background: transparent;
+    }
+    .scroll-rail i {
+      display: block; height: 100%; width: 100%; transform-origin: left; transform: scaleX(0);
+      background: linear-gradient(90deg, rgba(200,165,95,.25), var(--gold));
+      box-shadow: 0 0 18px rgba(200,165,95,.5);
+      will-change: transform;
+    }
+
+    /* ============================================================
+       ✦ 自定义光标
+       ============================================================ */
+    .cursor-dot, .cursor-ring {
+      position: fixed; top: 0; left: 0; z-index: 1500; pointer-events: none;
+      border-radius: 50%; opacity: 0;
+      transition: opacity .35s ease, width .35s var(--ease), height .35s var(--ease),
+                  background .35s ease, border-color .35s ease, transform .2s ease;
+      will-change: transform;
+    }
+    .cursor-dot { width: 6px; height: 6px; background: var(--gold); margin: -3px 0 0 -3px; }
+    .cursor-ring {
+      width: 34px; height: 34px; margin: -17px 0 0 -17px;
+      border: 1px solid rgba(200,165,95,.55);
+      display: grid; place-items: center;
+      font-size: 10px; letter-spacing: .16em; text-transform: uppercase;
+      color: transparent; backdrop-filter: blur(1px);
+    }
+    html.cursor-on .cursor-dot, html.cursor-on .cursor-ring { opacity: 1; }
+    /* 悬停链接：环收紧、点放大 */
+    html.cur-link .cursor-ring { width: 54px; height: 54px; margin: -27px 0 0 -27px; border-color: var(--gold); background: rgba(200,165,95,.07); }
+    html.cur-link .cursor-dot { transform: scale(.4); }
+    /* 悬停图片：环变大并显示文字 */
+    html.cur-view .cursor-ring {
+      width: 92px; height: 92px; margin: -46px 0 0 -46px;
+      border-color: var(--gold); background: rgba(200,165,95,.1);
+      color: var(--gold); backdrop-filter: blur(3px);
+    }
+    html.cur-view .cursor-dot { opacity: 0; }
+    html.cur-drag .cursor-ring { width: 74px; height: 74px; margin: -37px 0 0 -37px; border-color: var(--gold); color: var(--gold); }
+    @media (pointer: fine) {
+      html.cursor-on, html.cursor-on * { cursor: none !important; }
+    }
+
+    /* ============================================================
+       ✦ 电影级文字揭幕
+       ============================================================ */
+    /* 逐词上升（Hero 大标题） */
+    .line-mask {
+      display: inline-block; overflow: hidden; vertical-align: bottom;
+      padding: .14em .08em .2em; margin: -.14em -.08em -.2em;
+    }
+    .line-mask > i {
+      display: inline-block; font-style: inherit;
+      transform: translateY(115%); opacity: 0;
+      transition: transform 1.15s var(--ease), opacity 1.15s var(--ease);
+      transition-delay: calc(var(--w, 0) * .075s + var(--base, 0s));
+    }
+    .hero-inner.show .line-mask > i { transform: none; opacity: 1; }
+
+    /* 标题剪影揭幕 */
+    .section-head h2 {
+      clip-path: inset(0 0 102% 0);
+      transform: translateY(14px);
+      transition: clip-path 1.25s var(--ease) .1s, transform 1.25s var(--ease) .1s;
+    }
+    .section-head.show h2 { clip-path: inset(0 0 -12% 0); transform: none; }
+    .section-head .kicker { overflow: hidden; }
+    .section-head .kicker::before { transition: width .9s var(--ease) .25s; }
+    .section-head:not(.show) .kicker::before { width: 0; }
+
+    /* ============================================================
+       ✦ 卡片 3D 倾斜（What I Do / About / Now）
+       ============================================================ */
+    .card.t3d { transform-style: preserve-3d; will-change: transform; }
+    .card.t3d.tilting {
+      transition: transform .14s ease-out, border-color .4s ease, box-shadow .4s ease;
+      border-color: var(--gold-line);
+      box-shadow: 0 30px 70px rgba(0,0,0,.42), 0 0 44px rgba(200,165,95,.1);
+    }
+    .card.t3d::after {
+      content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 1;
+      pointer-events: none; opacity: 0; transition: opacity .4s ease;
+      background: radial-gradient(320px circle at var(--cx,50%) var(--cy,50%), rgba(255,246,224,.1), transparent 60%);
+    }
+    .card.t3d.tilting::after { opacity: 1; }
+    .card > * { position: relative; z-index: 2; }
+
+    /* ============================================================
+       ✦ 视差
+       ============================================================ */
+    .celestial { will-change: transform; }
+    .marquee-track { transition: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .line-mask > i { transform: none !important; opacity: 1 !important; }
+      .section-head h2 { clip-path: none !important; transform: none !important; }
+      .preloader, .curtain { display: none !important; }
+    }
   </style>
 </head>
 <body>
+  <script>
+    // 立刻标记加载态，避免闪烁（尊重减弱动效偏好）
+    (function () {
+      var rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!rm && !sessionStorage.getItem('yl-seen')) document.documentElement.classList.add('loading');
+    })();
+  </script>
+
+  <div class="preloader" id="preloader">
+    <div class="pre-inner">
+      <div class="pre-name">依林</div>
+      <div class="pre-sub">El universo de Yilin</div>
+      <div class="pre-rail"><i></i></div>
+    </div>
+  </div>
+  <div class="curtain"></div>
+
+  <div class="scroll-rail"><i id="scroll-rail-fill"></i></div>
+
   <div class="atmos"></div>
   <div class="starfield"></div>
   <div class="grain"></div>
   <div class="cursor-glow" id="cursor-glow"></div>
+  <div class="cursor-ring" id="cursor-ring"></div>
+  <div class="cursor-dot" id="cursor-dot"></div>
 
   <header>
     <a href="#top" class="brand">YILIN · UNIVERSE</a>
@@ -1202,19 +1374,73 @@
   </div>
 
   <script>
-    // Hero 入场
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        const heroInner = document.querySelector('.hero-inner');
-        if (heroInner) heroInner.classList.add('show');
-      }, 180);
-    });
+    // ============================================================
+    // ✦ 开场编排：序幕 → 幕布上升 → 标题逐词升起
+    // ============================================================
+    const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const FINE   = window.matchMedia('(pointer: fine)').matches;
+    const html   = document.documentElement;
 
-    // Scroll reveal
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('show'); io.unobserve(entry.target); } });
-    }, { threshold: 0.14 });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    // 把文字拆成「遮罩 + 逐词」结构
+    function maskWords(el, base, start) {
+      if (!el) return start;
+      const words = el.textContent.trim().split(/\s+/).filter(Boolean);
+      el.innerHTML = words.map((w, i) =>
+        '<span class="line-mask" style="--w:' + (start + i) + ';--base:' + base + '"><i>' + w + '</i></span>'
+      ).join(' ');
+      return start + words.length;
+    }
+    (function splitHero() {
+      if (REDUCE) return;
+      let n = 0;
+      n = maskWords(document.querySelector('.display-cn'), '.05s', n);
+      n = maskWords(document.querySelector('.latin-name'), '.15s', n);
+      n = maskWords(document.querySelector('.hero-title-text'), '.2s', n);
+    })();
+
+    function startHero() {
+      const hero = document.querySelector('.hero-inner');
+      if (hero) hero.classList.add('show');
+    }
+
+    window.addEventListener('load', () => {
+      if (!html.classList.contains('loading')) { startHero(); return; }
+      // 序幕至少停留 1.6s，保证节奏完整
+      setTimeout(() => {
+        html.classList.remove('loading');
+        html.classList.add('curtain-up');
+        sessionStorage.setItem('yl-seen', '1');
+        setTimeout(startHero, 260);
+        setTimeout(() => html.classList.remove('curtain-up'), 1400);
+      }, 1600);
+    });
+    // 兜底：万一 load 未触发也不卡住
+    setTimeout(() => {
+      if (html.classList.contains('loading')) {
+        html.classList.remove('loading'); startHero();
+      }
+    }, 4200);
+
+    // Scroll reveal（含兜底：IO 不可用或未回调时仍能显示内容）
+    const revealEls = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+    function revealInView() {
+      const h = window.innerHeight;
+      revealEls.forEach((el) => {
+        if (el.classList.contains('show')) return;
+        if (el.getBoundingClientRect().top < h * 0.92) el.classList.add('show');
+      });
+    }
+    if (!('IntersectionObserver' in window)) {
+      revealEls.forEach((el) => el.classList.add('show'));
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('show'); io.unobserve(entry.target); } });
+      }, { threshold: 0.14 });
+      revealEls.forEach(el => io.observe(el));
+      window.addEventListener('scroll', revealInView, { passive: true });
+      window.addEventListener('resize', revealInView);
+      setTimeout(revealInView, 1200);
+    }
 
     // 天体视差
     const celestial = document.querySelector('.celestial');
@@ -1406,10 +1632,20 @@
         // 入场错落
         if (!reduce) {
           frames.forEach((f, i) => { f.classList.add('will-in'); f.style.setProperty('--i', i); });
-          const io2 = new IntersectionObserver((ents) => {
-            ents.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io2.unobserve(en.target); } });
-          }, { threshold: 0.15 });
-          frames.forEach((f) => io2.observe(f));
+          const inView = () => {
+            const h = window.innerHeight;
+            frames.forEach((f) => {
+              if (!f.classList.contains('in') && f.getBoundingClientRect().top < h * 0.95) f.classList.add('in');
+            });
+          };
+          if ('IntersectionObserver' in window) {
+            const io2 = new IntersectionObserver((ents) => {
+              ents.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io2.unobserve(en.target); } });
+            }, { threshold: 0.15 });
+            frames.forEach((f) => io2.observe(f));
+            window.addEventListener('scroll', inView, { passive: true });
+            setTimeout(inView, 1200);
+          } else { frames.forEach((f) => f.classList.add('in')); }
         }
 
         // 拖拽惯性
@@ -1470,6 +1706,141 @@
             openLb(list, idx);
           });
         });
+      });
+    })();
+    // ============================================================
+    // ✦ 惯性平滑滚动（桌面端）
+    // ============================================================
+    (function smoothScroll() {
+      if (!FINE || REDUCE) return;
+      html.style.scrollBehavior = 'auto';
+      let target = window.scrollY, current = target, running = false, self = false;
+      const maxY = () => document.documentElement.scrollHeight - window.innerHeight;
+      function loop() {
+        current += (target - current) * 0.11;
+        if (Math.abs(target - current) < 0.4) { current = target; running = false; }
+        self = true; window.scrollTo(0, current); self = false;
+        if (running) requestAnimationFrame(loop);
+      }
+      function kick() { if (!running) { running = true; requestAnimationFrame(loop); } }
+      window.addEventListener('wheel', (e) => {
+        if (e.defaultPrevented) return;                        // 画廊已消费
+        if (document.body.style.overflow === 'hidden') return;  // 灯箱 / 弹窗打开
+        if (e.ctrlKey) return;                                  // 浏览器缩放
+        e.preventDefault();
+        const d = e.deltaMode === 1 ? e.deltaY * 18 : e.deltaY;
+        target = Math.max(0, Math.min(maxY(), target + d));
+        kick();
+      }, { passive: false });
+      window.addEventListener('scroll', () => { if (!self && !running) target = window.scrollY; }, { passive: true });
+      window.addEventListener('resize', () => { target = Math.min(target, maxY()); });
+      document.querySelectorAll('a[href^="#"]').forEach((a) => {
+        a.addEventListener('click', (e) => {
+          const id = a.getAttribute('href');
+          if (!id || id.length < 2) return;
+          const el = document.querySelector(id);
+          if (!el) return;
+          e.preventDefault();
+          target = Math.max(0, Math.min(maxY(), el.getBoundingClientRect().top + window.scrollY));
+          kick();
+        });
+      });
+    })();
+
+    // ============================================================
+    // ✦ 滚动特效：进度轨 · 天体视差 · 跑马灯速度感
+    // ============================================================
+    (function scrollFX() {
+      const rail = document.getElementById('scroll-rail-fill');
+      const celestial = document.querySelector('.celestial');
+      const marquees = document.querySelectorAll('.marquee');
+      let lastY = window.scrollY, ticking = false;
+      function frame() {
+        const y = window.scrollY;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        if (rail) rail.style.transform = 'scaleX(' + (max > 0 ? (y / max).toFixed(4) : 0) + ')';
+        if (!REDUCE) {
+          if (celestial) celestial.style.transform = 'translate3d(0,' + (y * 0.14).toFixed(1) + 'px,0)';
+          const v = Math.max(-7, Math.min(7, (y - lastY) * 0.14));
+          marquees.forEach((m) => { m.style.transform = 'skewX(' + v.toFixed(2) + 'deg)'; });
+        }
+        lastY = y; ticking = false;
+      }
+      window.addEventListener('scroll', () => {
+        if (!ticking) { ticking = true; requestAnimationFrame(frame); }
+      }, { passive: true });
+      frame();
+    })();
+
+    // ============================================================
+    // ✦ 自定义光标（会呼吸、会说话）
+    // ============================================================
+    (function customCursor() {
+      if (!FINE || REDUCE) return;
+      const dot = document.getElementById('cursor-dot');
+      const ring = document.getElementById('cursor-ring');
+      if (!dot || !ring) return;
+      html.classList.add('cursor-on');
+      let mx = innerWidth / 2, my = innerHeight / 2, rx = mx, ry = my;
+      document.addEventListener('mousemove', (e) => {
+        mx = e.clientX; my = e.clientY;
+        dot.style.transform = 'translate(' + mx + 'px,' + my + 'px)';
+      }, { passive: true });
+      (function loop() {
+        rx += (mx - rx) * 0.19; ry += (my - ry) * 0.19;
+        ring.style.transform = 'translate(' + rx.toFixed(2) + 'px,' + ry.toFixed(2) + 'px)';
+        requestAnimationFrame(loop);
+      })();
+      document.addEventListener('mouseover', (e) => {
+        const t = e.target;
+        if (!t || !t.closest) return;
+        const frame = t.closest('.portfolio-frame');
+        const wall = t.closest('.portfolio-wall, .shuxia-wall');
+        const link = t.closest('a, button, .btn, .cta-small, .hamburger');
+        html.classList.toggle('cur-view', !!frame);
+        html.classList.toggle('cur-drag', !!wall && !frame);
+        html.classList.toggle('cur-link', !!link && !frame);
+        ring.textContent = frame ? '查看' : (wall ? '拖拽' : '');
+      });
+      document.addEventListener('mouseleave', () => html.classList.remove('cursor-on'));
+      document.addEventListener('mouseenter', () => html.classList.add('cursor-on'));
+      document.addEventListener('mousedown', () => { ring.style.opacity = '.55'; });
+      document.addEventListener('mouseup', () => { ring.style.opacity = ''; });
+    })();
+
+    // ============================================================
+    // ✦ 磁吸按钮
+    // ============================================================
+    (function magnetic() {
+      if (!FINE || REDUCE) return;
+      document.querySelectorAll('.btn, .cta-small, .lb-nav, .modal-close, .lb-close').forEach((el) => {
+        el.addEventListener('pointermove', (e) => {
+          const r = el.getBoundingClientRect();
+          const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+          const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+          el.style.transform = 'translate(' + (dx * 15).toFixed(1) + 'px,' + (dy * 11).toFixed(1) + 'px)';
+        });
+        el.addEventListener('pointerleave', () => { el.style.transform = ''; });
+      });
+    })();
+
+    // ============================================================
+    // ✦ 内容卡片 3D 倾斜
+    // ============================================================
+    (function cardTilt() {
+      if (!FINE || REDUCE) return;
+      document.querySelectorAll('#what .card, #proof .card, #now .card').forEach((c) => {
+        c.classList.add('t3d');
+        c.addEventListener('pointermove', (e) => {
+          const r = c.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+          c.classList.add('tilting');
+          c.style.transform = 'perspective(1100px) rotateX(' + ((0.5 - py) * 5).toFixed(2) +
+            'deg) rotateY(' + ((px - 0.5) * 6).toFixed(2) + 'deg) translateY(-5px)';
+          c.style.setProperty('--cx', (px * 100).toFixed(1) + '%');
+          c.style.setProperty('--cy', (py * 100).toFixed(1) + '%');
+        });
+        c.addEventListener('pointerleave', () => { c.classList.remove('tilting'); c.style.transform = ''; });
       });
     })();
   </script>
