@@ -572,6 +572,99 @@
     }
 
     /* ============================================================
+       ✦ THE LAB —— 自造工具 / AI 助手矩阵（可无限扩展）
+       ============================================================ */
+    .lab-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+      max-width: var(--maxw); margin-inline: auto;
+    }
+    .assistant { display: flex; flex-direction: column; padding: clamp(30px, 3vw, 42px); }
+    .a-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+    .a-head .index { font-size: clamp(26px, 2.6vw, 36px); line-height: .9; flex: 0 0 auto; }
+    .a-title { flex: 1 1 auto; min-width: 0; }
+    .a-title h3 {
+      font-family: "Songti SC", "Cormorant Garamond", serif;
+      font-size: clamp(22px, 2.2vw, 30px); font-weight: 400;
+      line-height: 1.2; margin: 0 0 5px; letter-spacing: .01em;
+    }
+    .a-role {
+      font-size: 10.5px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--ink-3);
+    }
+    /* 状态：让「未完成」也成为有价值的信息 */
+    .status {
+      flex: 0 0 auto; display: inline-flex; align-items: center; gap: 7px;
+      padding: 5px 12px; border-radius: 999px; white-space: nowrap;
+      font-size: 11px; letter-spacing: .06em;
+      border: 1px solid var(--hair-2); color: var(--ink-3);
+    }
+    .status::before {
+      content: ""; width: 5px; height: 5px; border-radius: 50%;
+      background: currentColor;
+    }
+    .status.live    { color: var(--gold); border-color: var(--gold-line); background: var(--gold-soft); }
+    .status.live::before { box-shadow: 0 0 10px var(--gold); }
+    .status.iterate { color: rgba(200,165,95,.8); border-color: rgba(200,165,95,.22); }
+    .status.proto   { color: var(--moon); border-color: rgba(185,203,214,.22); }
+    .status.idea    { color: var(--ink-4); }
+
+    .a-line { color: var(--ink-2); font-size: 15px; line-height: 1.85; }
+    .a-meta { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 18px; }
+
+    .a-toggle {
+      margin-top: 22px; align-self: flex-start;
+      display: inline-flex; align-items: center; gap: 9px;
+      background: none; border: 0; cursor: pointer; padding: 6px 0;
+      color: var(--ink-3); font-family: inherit; font-size: 12px; letter-spacing: .14em;
+      text-transform: uppercase; transition: color .35s ease;
+      border-bottom: 1px solid var(--hair-2);
+    }
+    .a-toggle:hover { color: var(--gold); border-bottom-color: var(--gold-line); }
+    .a-toggle i {
+      font-style: normal; font-size: 15px; line-height: 1;
+      transition: transform .45s var(--ease); display: inline-block;
+    }
+    .assistant.open .a-toggle i { transform: rotate(45deg); }
+
+    /* 0fr → 1fr：无需固定高度的平滑展开 */
+    .a-body {
+      display: grid; grid-template-rows: 0fr;
+      transition: grid-template-rows .6s var(--ease), opacity .5s ease;
+      opacity: 0;
+    }
+    .assistant.open .a-body { grid-template-rows: 1fr; opacity: 1; }
+    .a-body > div { overflow: hidden; }
+    .a-body dl { margin-top: 22px; display: grid; gap: 16px; }
+    .a-body dt {
+      font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 6px;
+    }
+    .a-body dd { color: var(--ink-2); font-size: 14.5px; line-height: 1.8; }
+    .a-body .todo { color: var(--ink-4); font-style: italic; }
+
+    /* 占位卡：为未来的作品留出位置，而不是显得没做完 */
+    .assistant.slot {
+      border-style: dashed; border-color: var(--hair-2);
+      background: transparent; justify-content: center; align-items: center;
+      text-align: center; min-height: 190px;
+    }
+    .assistant.slot:hover { border-color: var(--gold-line); transform: none; box-shadow: none; }
+    .assistant.slot .s-mark {
+      font-family: "Cormorant Garamond", serif; font-size: 34px; font-style: italic;
+      color: var(--ink-4); line-height: 1; margin-bottom: 14px;
+    }
+    .assistant.slot h3 {
+      font-family: "Songti SC", serif; font-size: 18px; font-weight: 400;
+      color: var(--ink-3); margin-bottom: 8px;
+    }
+    .assistant.slot p { color: var(--ink-4); font-size: 13px; }
+
+    @media (max-width: 900px) {
+      .lab-grid { grid-template-columns: 1fr; }
+      .a-head { flex-wrap: wrap; }
+    }
+
+    /* ============================================================
        ABOUT / PROOF
        ============================================================ */
     .proof-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; max-width: var(--maxw); margin-inline: auto; }
@@ -1070,9 +1163,10 @@
     <a href="#top" class="brand">YILIN · UNIVERSE</a>
     <nav>
       <a href="#what">What I Do</a>
-      <a href="#work">Selected Work</a>
-      <a href="#proof">About me</a>
-      <a href="#method">How I Work</a>
+      <a href="#work">Work</a>
+      <a href="#lab">The Lab</a>
+      <a href="#method">Advantages</a>
+      <a href="#proof">About</a>
       <a href="#now">Now</a>
       <a class="cta-small" href="#contact">Contact</a>
     </nav>
@@ -1243,52 +1337,114 @@
               </figure>
             </div>
           </article>
-          <article class="card project-card case-product reveal">
-            <div>
-              <div class="project-head"><span class="index">03</span><h3>网站与产品</h3></div>
-              <p>收集我正在尝试做成产品的东西：个人网站、知识库、AI workflow、网页原型、小型 MVP...</p>
-              <div class="project-meta"><span class="pill">Product Experiment</span><span class="pill">Personal Website</span><span class="pill">AI Workflow</span><span class="pill">MVP</span><span class="pill">Digital Garden</span></div>
-              <p class="product-note">(详见简历，持续更新中...)</p>
-            </div>
-          </article>
         </div>
       </div>
     </section>
 
     <hr class="divider">
 
-    <section id="proof">
+    <!-- ============================================================
+         03 — The Lab：自造工具 / AI 助手矩阵
+         新增一个助手：复制任意一张 card assistant 卡片即可
+         ============================================================ -->
+    <section id="lab">
       <div class="section-head reveal">
-        <div class="kicker">03 — About me</div>
-        <h2>关于我</h2>
+        <div class="kicker">03 — The Lab</div>
+        <h2>我给自己造的<em>工具</em>。</h2>
+        <p>收集我正在尝试做成产品的东西：个人网站、知识库、AI workflow、网页原型、小型 MVP...<br/>每一个都从一个真实的麻烦开始——先解决我自己的问题，再看它能不能解决别人的。</p>
       </div>
-      <div class="proof-wrap">
-        <div class="card manual-card reveal">
-          <span class="num">Interests</span>
-          <h3>热爱 / 感兴趣的事</h3>
-          <ul class="manual-list">
-            <li>音乐 🎼、旅行🚂、摄影📸</li>
-            <li>网球🎾、徒步⛰️、飞盘🥏</li>
-            <li>记录、写作、阅读、整理、复盘、自我探索</li>
-            <li>习得新技能、新知识、新观点、新的思维模型</li>
-            <li>AI创作、网页、图像、工作流、知识库、小程序</li>
-          </ul>
-        </div>
-        <div class="card manual-card reveal">
-          <span class="num">Principles</span>
-          <h3>原则</h3>
-          <ol class="principle-list">
-            <li>自我不能寻找，自我只能创造。</li>
-            <li>你会怎么进行小决策，就会怎么进行大决策。你会怎么过你的一天，就会怎么过你的一生。</li>
-            <li>文明其精神，野蛮其体魄。</li>
-            <li>读书壮游见高人。</li>
-            <li>任何人在某一领域达到专家水平，大约需要一万小时的专注练习。</li>
-          </ol>
-        </div>
+
+      <div class="lab-grid">
+        <article class="card assistant reveal">
+          <div class="a-head">
+            <span class="index">01</span>
+            <div class="a-title"><h3>己子</h3><span class="a-role">Personal Assistant</span></div>
+            <span class="status live">日常在用</span>
+          </div>
+          <p class="a-line">我的个人助手。把日常里散落的安排、想法和待办收拢到一个地方，让我不用再靠脑子记事。</p>
+          <div class="a-meta"><span class="pill">Personal OS</span><span class="pill">AI Agent</span></div>
+          <button class="a-toggle" aria-expanded="false">展开细节 <i>+</i></button>
+          <div class="a-body"><div><dl>
+            <div><dt>为什么做</dt><dd class="todo">待补充：当初是什么麻烦让你决定做它。</dd></div>
+            <div><dt>怎么做的</dt><dd class="todo">待补充：用了哪些模型 / 工具 / 工作流，怎么搭起来的。</dd></div>
+            <div><dt>现在到哪一步</dt><dd class="todo">待补充：用多久了，解决了什么，接下来想改什么。</dd></div>
+          </dl></div></div>
+        </article>
+
+        <article class="card assistant reveal">
+          <div class="a-head">
+            <span class="index">02</span>
+            <div class="a-title"><h3>耐旭</h3><span class="a-role">Knowledge Refinery</span></div>
+            <span class="status live">日常在用</span>
+          </div>
+          <p class="a-line">知识流漂洗助手。把信息流里冲下来的东西反复漂洗，滤掉噪音，留下真正沉淀得下来的那部分。</p>
+          <div class="a-meta"><span class="pill">Knowledge Base</span><span class="pill">Information Filtering</span></div>
+          <button class="a-toggle" aria-expanded="false">展开细节 <i>+</i></button>
+          <div class="a-body"><div><dl>
+            <div><dt>为什么做</dt><dd class="todo">待补充：信息过载的具体表现是什么。</dd></div>
+            <div><dt>怎么做的</dt><dd class="todo">待补充：「漂洗」这个过程具体分几步。</dd></div>
+            <div><dt>现在到哪一步</dt><dd class="todo">待补充：现在每天处理多少输入，产出是什么形态。</dd></div>
+          </dl></div></div>
+        </article>
+
+        <article class="card assistant reveal">
+          <div class="a-head">
+            <span class="index">03</span>
+            <div class="a-title"><h3>朵拉</h3><span class="a-role">Visual Workflow</span></div>
+            <span class="status iterate">持续迭代</span>
+          </div>
+          <p class="a-line">生成图片的工作流助手。把我做视觉的那套流程固定下来，让出图这件事从每次重来变成可复用的系统。</p>
+          <div class="a-meta"><span class="pill">AI Image</span><span class="pill">Workflow</span><span class="pill">Prompt System</span></div>
+          <button class="a-toggle" aria-expanded="false">展开细节 <i>+</i></button>
+          <div class="a-body"><div><dl>
+            <div><dt>为什么做</dt><dd class="todo">待补充：手工出图时最耗时/最不稳定的环节是什么。</dd></div>
+            <div><dt>怎么做的</dt><dd class="todo">待补充：工作流的步骤与用到的工具。</dd></div>
+            <div><dt>现在到哪一步</dt><dd class="todo">待补充：出图效率或稳定性的变化。</dd></div>
+          </dl></div></div>
+        </article>
+
+        <article class="card assistant reveal">
+          <div class="a-head">
+            <span class="index">04</span>
+            <div class="a-title"><h3>Visionboard</h3><span class="a-role">Vision Board</span></div>
+            <span class="status proto">原型</span>
+          </div>
+          <p class="a-line">把想去的地方、想成为的样子，变成一面看得见的板子——让愿望从抽象的念头变成具体的画面。</p>
+          <div class="a-meta"><span class="pill">Web App</span><span class="pill">MVP</span></div>
+          <button class="a-toggle" aria-expanded="false">展开细节 <i>+</i></button>
+          <div class="a-body"><div><dl>
+            <div><dt>为什么做</dt><dd class="todo">待补充。</dd></div>
+            <div><dt>怎么做的</dt><dd class="todo">待补充：技术栈与实现方式。</dd></div>
+            <div><dt>现在到哪一步</dt><dd class="todo">待补充：能否放一个可访问的链接或演示。</dd></div>
+          </dl></div></div>
+        </article>
+
+        <article class="card assistant reveal">
+          <div class="a-head">
+            <span class="index">05</span>
+            <div class="a-title"><h3>漫画工作流</h3><span class="a-role">Comic Pipeline</span></div>
+            <span class="status proto">进行中</span>
+          </div>
+          <p class="a-line">正在搭的一条从故事到成图的流水线：把分镜、角色一致性、上色和排版串成一套可以重复跑的流程。</p>
+          <div class="a-meta"><span class="pill">Storyboard</span><span class="pill">Character Consistency</span><span class="pill">Comic</span></div>
+          <button class="a-toggle" aria-expanded="false">展开细节 <i>+</i></button>
+          <div class="a-body"><div><dl>
+            <div><dt>为什么做</dt><dd class="todo">待补充。</dd></div>
+            <div><dt>怎么做的</dt><dd class="todo">待补充：流水线的环节。</dd></div>
+            <div><dt>作品</dt><dd class="todo">待补充：漫画成品图，之后会在这里做一个画廊。</dd></div>
+          </dl></div></div>
+        </article>
+
+        <article class="card assistant slot reveal">
+          <div class="s-mark">＋</div>
+          <h3>下一个</h3>
+          <p>这一格留给还没做出来的东西。</p>
+        </article>
       </div>
     </section>
 
     <hr class="divider">
+
 
     <section id="method">
       <div class="section-head reveal">
@@ -1362,9 +1518,42 @@
 
     <hr class="divider">
 
+    <section id="proof">
+      <div class="section-head reveal">
+        <div class="kicker">06 — About me</div>
+        <h2>关于我</h2>
+      </div>
+      <div class="proof-wrap">
+        <div class="card manual-card reveal">
+          <span class="num">Interests</span>
+          <h3>热爱 / 感兴趣的事</h3>
+          <ul class="manual-list">
+            <li>音乐 🎼、旅行🚂、摄影📸</li>
+            <li>网球🎾、徒步⛰️、飞盘🥏</li>
+            <li>记录、写作、阅读、整理、复盘、自我探索</li>
+            <li>习得新技能、新知识、新观点、新的思维模型</li>
+            <li>AI创作、网页、图像、工作流、知识库、小程序</li>
+          </ul>
+        </div>
+        <div class="card manual-card reveal">
+          <span class="num">Principles</span>
+          <h3>原则</h3>
+          <ol class="principle-list">
+            <li>自我不能寻找，自我只能创造。</li>
+            <li>你会怎么进行小决策，就会怎么进行大决策。你会怎么过你的一天，就会怎么过你的一生。</li>
+            <li>文明其精神，野蛮其体魄。</li>
+            <li>读书壮游见高人。</li>
+            <li>任何人在某一领域达到专家水平，大约需要一万小时的专注练习。</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <hr class="divider">
+
     <section id="now">
       <div class="section-head reveal">
-        <div class="kicker">06 — Now</div>
+        <div class="kicker">07 — Now</div>
         <h2>最近</h2>
       </div>
       <div class="now">
@@ -1393,7 +1582,7 @@
 
     <section class="contact" id="contact">
       <div class="contact-inner reveal">
-        <div class="kicker" style="justify-content:center">07 — Contact</div>
+        <div class="kicker" style="justify-content:center">08 — Contact</div>
         <h2>交个朋友</h2>
         <p>关于 AI、内容、语言、网站、产品，或者任何。</p>
         <div class="contact-links">
@@ -1789,6 +1978,18 @@
         });
       }
     })();
+    // ============================================================
+    // ✦ The Lab：助手卡片展开 / 收起
+    // ============================================================
+    document.querySelectorAll('.assistant .a-toggle').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.assistant');
+        const open = card.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(open));
+        btn.childNodes[0].nodeValue = open ? '收起 ' : '展开细节 ';
+      });
+    });
+
     // ============================================================
     // ✦ 惯性平滑滚动（桌面端）
     // ============================================================
