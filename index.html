@@ -59,10 +59,12 @@
       --bg-raise:  #0b0d12;
 
       /* 墨色：暖象牙白 */
+      /* 透明度按 WCAG 对比度校准过：
+         1.0→17.5:1  .62→6.9:1  .50→4.8:1(AA)  .36→3.0:1(仅用于占位/装饰) */
       --ink:       #f4efe4;
       --ink-2:     rgba(244,239,228,.62);
-      --ink-3:     rgba(244,239,228,.40);
-      --ink-4:     rgba(244,239,228,.24);
+      --ink-3:     rgba(244,239,228,.50);
+      --ink-4:     rgba(244,239,228,.36);
 
       /* 唯一主强调：香槟金 —— 全站只用它作强调 */
       --gold:      #c8a55f;
@@ -237,6 +239,12 @@
     /* ============================================================
        ✦ 无障碍：键盘可达性
        ============================================================ */
+    /* 仅供屏幕阅读器 */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+    }
+
     .skip-link {
       position: fixed; top: 10px; left: 50%; z-index: 2100;
       transform: translate(-50%, -180%);
@@ -1444,10 +1452,10 @@
   </div>
 
   <main>
-    <section id="what">
+    <section id="what" aria-labelledby="sec-what">
       <div class="section-head reveal">
         <div class="kicker">01 — What I Do</div>
-        <h2>把复杂的东西，<br/>做得<em>好玩</em>一点。</h2>
+        <h2 id="sec-what">把复杂的东西，<br/>做得<em>好玩</em>一点。</h2>
         <p>我喜欢把脑子里的想法、观察和经验，做成可以被读懂、被看见、被使用的东西。语言、AI 视觉和产品，都是我把想法从脑内带到现实里的方式。</p>
       </div>
       <div class="grid-3">
@@ -1474,10 +1482,10 @@
 
     <hr class="divider">
 
-    <section id="work">
+    <section id="work" aria-labelledby="sec-work">
       <div class="section-head reveal">
         <div class="kicker">02 — Selected Work</div>
-        <h2>小作品们</h2>
+        <h2 id="sec-work">小作品们</h2>
         <p>未完待续。</p>
       </div>
       <div class="projects">
@@ -1491,28 +1499,28 @@
           </div>
           <div class="shuxia-wall" aria-label="树下坐内容展示">
             <figure class="portfolio-frame image-card">
-              <img loading="lazy" decoding="async" src="assets/shuxia-writing-01.webp" alt="树下坐城市与再见文字图">
+              <img loading="lazy" decoding="async" src="assets/shuxia-writing-01.webp" alt="树下坐城市与再见文字图" width="1350" height="1800">
             </figure>
             <figure class="portfolio-frame image-card">
-              <img loading="lazy" decoding="async" src="assets/shuxia-writing-02.webp" alt="树下坐朋友生活碎片图">
+              <img loading="lazy" decoding="async" src="assets/shuxia-writing-02.webp" alt="树下坐朋友生活碎片图" width="1350" height="1800">
             </figure>
             <figure class="portfolio-frame image-card">
-              <img loading="lazy" decoding="async" src="assets/shuxia-writing-03.webp" alt="树下坐深夜城市文字图">
+              <img loading="lazy" decoding="async" src="assets/shuxia-writing-03.webp" alt="树下坐深夜城市文字图" width="1350" height="1800">
             </figure>
             <figure class="portfolio-frame image-card">
-              <img loading="lazy" decoding="async" src="assets/shuxia-writing-04.webp" alt="树下坐江边夜色文字图">
+              <img loading="lazy" decoding="async" src="assets/shuxia-writing-04.webp" alt="树下坐江边夜色文字图" width="1350" height="1800">
             </figure>
             <figure class="portfolio-frame image-card">
-              <img loading="lazy" decoding="async" src="assets/shuxia-writing-05.webp" alt="树下坐小狗故事长图">
+              <img loading="lazy" decoding="async" src="assets/shuxia-writing-05.webp" alt="树下坐小狗故事长图" width="1350" height="1800">
             </figure>
             <figure class="portfolio-frame image-card">
-              <img loading="lazy" decoding="async" src="assets/shuxia-writing-06.webp" alt="树下坐小狗偏爱文字图">
+              <img loading="lazy" decoding="async" src="assets/shuxia-writing-06.webp" alt="树下坐小狗偏爱文字图" width="1349" height="1800">
             </figure>
             <figure class="portfolio-frame image-card">
-              <img loading="lazy" decoding="async" src="assets/shuxia-writing-07.webp" alt="树下坐小狗亲密关系文字图">
+              <img loading="lazy" decoding="async" src="assets/shuxia-writing-07.webp" alt="树下坐小狗亲密关系文字图" width="1350" height="1800">
             </figure>
             <figure class="portfolio-frame image-card">
-              <img loading="lazy" decoding="async" src="assets/shuxia-writing-08.webp" alt="树下坐小狗离别文字图">
+              <img loading="lazy" decoding="async" src="assets/shuxia-writing-08.webp" alt="树下坐小狗离别文字图" width="1350" height="1800">
             </figure>
           </div>
         </article>
@@ -1525,39 +1533,39 @@
             </div>
             <div class="portfolio-wall">
               <figure class="portfolio-frame image-card">
-                <img loading="lazy" decoding="async" src="assets/commercial-01.webp" alt="夜色商业封面">
+                <img loading="lazy" decoding="async" src="assets/commercial-01.webp" alt="夜色商业封面" width="941" height="1672">
                 <figcaption class="portfolio-caption">视频封面制作示例</figcaption>
               </figure>
               <figure class="portfolio-frame image-card">
-                <img loading="lazy" decoding="async" src="assets/commercial-02.webp" alt="创始人访谈海报">
+                <img loading="lazy" decoding="async" src="assets/commercial-02.webp" alt="创始人访谈海报" width="1054" height="1492">
                 <figcaption class="portfolio-caption">访谈海报制作示例</figcaption>
               </figure>
               <figure class="portfolio-frame image-card">
-                <img loading="lazy" decoding="async" src="assets/commercial-03.webp" alt="长期主义封面">
+                <img loading="lazy" decoding="async" src="assets/commercial-03.webp" alt="长期主义封面" width="1536" height="1024">
                 <figcaption class="portfolio-caption">视频封面制作示例</figcaption>
               </figure>
               <figure class="portfolio-frame image-card">
-                <img loading="lazy" decoding="async" src="assets/magazine-01.webp" alt="红色杂志封面">
+                <img loading="lazy" decoding="async" src="assets/magazine-01.webp" alt="红色杂志封面" width="1084" height="1451">
                 <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
               </figure>
               <figure class="portfolio-frame image-card">
-                <img loading="lazy" decoding="async" src="assets/magazine-02.webp" alt="春日美妆视觉">
+                <img loading="lazy" decoding="async" src="assets/magazine-02.webp" alt="春日美妆视觉" width="1086" height="1448">
                 <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
               </figure>
               <figure class="portfolio-frame image-card">
-                <img loading="lazy" decoding="async" src="assets/magazine-03.webp" alt="橙色生活杂志">
+                <img loading="lazy" decoding="async" src="assets/magazine-03.webp" alt="橙色生活杂志" width="1086" height="1448">
                 <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
               </figure>
               <figure class="portfolio-frame image-card">
-                <img loading="lazy" decoding="async" src="assets/magazine-04.webp" alt="春日封面设计">
+                <img loading="lazy" decoding="async" src="assets/magazine-04.webp" alt="春日封面设计" width="1086" height="1448">
                 <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
               </figure>
               <figure class="portfolio-frame image-card">
-                <img loading="lazy" decoding="async" src="assets/magazine-05.webp" alt="柔粉联系页视觉">
+                <img loading="lazy" decoding="async" src="assets/magazine-05.webp" alt="柔粉联系页视觉" width="1086" height="1448">
                 <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
               </figure>
               <figure class="portfolio-frame image-card">
-                <img loading="lazy" decoding="async" src="assets/magazine-06.webp" alt="西语杂志封面">
+                <img loading="lazy" decoding="async" src="assets/magazine-06.webp" alt="西语杂志封面" width="1086" height="1448">
                 <figcaption class="portfolio-caption">杂志写真制作示例</figcaption>
               </figure>
             </div>
@@ -1572,10 +1580,10 @@
          03 — The Lab：自造工具 / AI 助手矩阵
          新增一个助手：复制任意一张 card assistant 卡片即可
          ============================================================ -->
-    <section id="lab">
+    <section id="lab" aria-labelledby="sec-lab">
       <div class="section-head reveal">
         <div class="kicker">03 — The Lab</div>
-        <h2>我给自己造的<em>工具</em>。</h2>
+        <h2 id="sec-lab">我给自己造的<em>工具</em>。</h2>
         <p>收集我正在尝试做成产品的东西：个人网站、知识库、AI workflow、网页原型、小型 MVP...<br/>每一个都从一个真实的麻烦开始——先解决我自己的问题，再看它能不能解决别人的。</p>
       </div>
 
@@ -1708,10 +1716,10 @@
     <hr class="divider">
 
 
-    <section id="method">
+    <section id="method" aria-labelledby="sec-method">
       <div class="section-head reveal">
         <div class="kicker">04 — Advantages</div>
-        <h2>我的优势</h2>
+        <h2 id="sec-method">我的优势</h2>
       </div>
       <div class="steps">
         <div class="step reveal">
@@ -1765,8 +1773,9 @@
       </div>
       <div class="table-card reveal">
         <table>
+          <caption class="sr-only">能力矩阵：每个方向对应我能做什么，以及可交付的成果</caption>
           <thead>
-            <tr><th>方向</th><th>我能做什么</th><th>交付物</th></tr>
+            <tr><th scope="col">方向</th><th scope="col">我能做什么</th><th scope="col">交付物</th></tr>
           </thead>
           <tbody>
             <tr><td>AI 内容创作</td><td>围绕一个主题或账号定位，完成从选题策划、脚本撰写、素材组织到内容结构搭建的完整流程</td><td>选题库 / 视频脚本 / 图文内容 / 教学素材 / 内容栏目</td></tr>
@@ -1780,10 +1789,10 @@
 
     <hr class="divider">
 
-    <section id="proof">
+    <section id="proof" aria-labelledby="sec-proof">
       <div class="section-head reveal">
         <div class="kicker">06 — About me</div>
-        <h2>关于我</h2>
+        <h2 id="sec-proof">关于我</h2>
       </div>
       <div class="proof-wrap">
         <div class="card manual-card reveal">
@@ -1813,10 +1822,10 @@
 
     <hr class="divider">
 
-    <section id="now">
+    <section id="now" aria-labelledby="sec-now">
       <div class="section-head reveal">
         <div class="kicker">07 — Now</div>
-        <h2>最近</h2>
+        <h2 id="sec-now">最近</h2>
       </div>
       <div class="now">
         <article class="card reveal">
@@ -1877,7 +1886,7 @@
       <div class="kicker">WeChat</div>
       <div class="qr">
         <img src="assets/wechat-qr.jpg" alt="依林的微信二维码"
-             onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+             onerror="this.style.display='none';this.nextElementSibling.style.display='block';" width="968" height="1378">
         <div class="qr-fallback" style="display:none">二维码待添加<br>请搜索 ID 添加好友</div>
       </div>
       <div class="wid">YL1010Go</div>
