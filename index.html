@@ -824,6 +824,14 @@
       font-weight: 400; font-size: 26px; margin-bottom: 16px; color: var(--ink);
     }
     .step ul { color: var(--ink-2); display: grid; gap: 10px; margin-top: 4px; padding-left: 1.2em; font-weight: 300; }
+    /* 主张 → 证据：把自我评价链接到实物 */
+    .proof-link {
+      margin-left: 12px; font-size: 11.5px; letter-spacing: .06em;
+      color: var(--gold); opacity: .72; white-space: nowrap;
+      border-bottom: 1px solid var(--gold-line);
+      transition: opacity .3s ease, border-color .3s ease;
+    }
+    .proof-link:hover { opacity: 1; border-bottom-color: var(--gold); }
     .step li { line-height: 1.7; }
 
     /* ============================================================
@@ -1589,7 +1597,24 @@
           </dl></div></div>
         </article>
 
-        <article class="card assistant slot wide reveal">
+        <article class="card assistant reveal">
+          <div class="a-head">
+            <span class="index">06</span>
+            <div class="a-title"><h3>效率管理系统</h3><span class="a-role">Productivity System</span></div>
+            <span class="status idea">待补充</span>
+          </div>
+          <p class="a-line">我自己搭的一套效率管理系统，把要做的事、做了多少、做得怎么样，收在同一个地方看。</p>
+          <div class="a-meta"><span class="pill">Productivity</span><span class="pill">System Design</span><span class="pill">时间管理</span></div>
+          <button class="a-toggle" aria-expanded="false">展开细节 <i>+</i></button>
+          <div class="a-body"><div><dl>
+            <div><dt>为什么做</dt><dd class="todo">待补充：当初是什么问题，让你决定用一套系统来管，而不是靠自觉。</dd></div>
+            <div><dt>怎么做的</dt><dd class="todo">待补充：搭在什么工具上（Notion / 飞书 / 其它），由哪几个模块组成，怎么记录和复盘。</dd></div>
+            <div><dt>现在到哪一步</dt><dd class="todo">待补充：用了多久，带来了什么具体变化。</dd></div>
+            <div><dt>证据</dt><dd class="todo">待补充：系统界面截图（存为 assets/lab-efficiency-01.png 后我接进来）。</dd></div>
+          </dl></div></div>
+        </article>
+
+        <article class="card assistant slot reveal">
           <div class="s-mark">＋</div>
           <h3>下一个</h3>
           <p>这一格留给还没做出来的东西。</p>
@@ -1628,7 +1653,7 @@
               <li>同理心，是我最大的天赋</li>
               <li>自驱型的快速学习者</li>
               <li>心理韧性</li>
-              <li>时间管理</li>
+              <li>时间管理<a class="proof-link" href="#lab">为此做了一套系统 ↗</a></li>
             </ul>
           </div>
         </div>
