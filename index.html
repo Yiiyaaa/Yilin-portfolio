@@ -781,6 +781,39 @@
     .a-body dd b { color: var(--ink); font-weight: 400; }
     .a-body .todo { color: var(--ink-4); font-style: italic; }
 
+    /* 证据图：文件存在才出现，缺席时整块不渲染 */
+    .evidence { margin-top: 26px; }
+    .evidence-label {
+      font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 12px;
+    }
+    .ev-strip { display: flex; flex-wrap: wrap; gap: 12px; }
+    .ev {
+      position: relative; flex: 0 0 auto; cursor: pointer;
+      width: clamp(126px, 31%, 200px); aspect-ratio: 16 / 10;
+      border-radius: 8px; overflow: hidden;
+      border: 1px solid var(--hair-2); background: #04060b;
+      transition: transform .5s var(--ease), border-color .5s ease, filter .5s ease;
+      filter: saturate(.94) brightness(.94);
+    }
+    .ev img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+    .ev::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(to top, rgba(2,3,6,.5), transparent 55%);
+    }
+    .ev:hover, .ev:focus-visible {
+      transform: translateY(-4px); border-color: var(--gold-line);
+      filter: saturate(1) brightness(1.04);
+      box-shadow: 0 18px 40px rgba(0,0,0,.45);
+    }
+    .ev figcaption {
+      position: absolute; left: 9px; right: 9px; bottom: 7px; z-index: 2;
+      font-size: 10.5px; letter-spacing: .04em; line-height: 1.35;
+      color: var(--ink-2); opacity: 0; transform: translateY(6px);
+      transition: opacity .4s ease, transform .4s ease;
+    }
+    .ev:hover figcaption, .ev:focus-visible figcaption { opacity: 1; transform: none; color: var(--ink); }
+
     /* 跨列卡片：给需要展示画面的项目更多空间 */
     .assistant.wide { grid-column: 1 / -1; }
 
@@ -1588,7 +1621,7 @@
       </div>
 
       <div class="lab-grid">
-        <article class="card assistant reveal">
+        <article class="card assistant reveal" data-lab="jizi">
           <div class="a-head">
             <span class="index">01</span>
             <div class="a-title"><h3>己子</h3><span class="a-role">Personal Assistant</span></div>
@@ -1605,7 +1638,7 @@
           </dl></div></div>
         </article>
 
-        <article class="card assistant reveal">
+        <article class="card assistant reveal" data-lab="naixu">
           <div class="a-head">
             <span class="index">02</span>
             <div class="a-title"><h3>奈绪</h3><span class="a-role">Knowledge Wash · 信息源漂洗</span></div>
@@ -1629,7 +1662,7 @@
           </dl></div></div>
         </article>
 
-        <article class="card assistant reveal">
+        <article class="card assistant reveal" data-lab="duola">
           <div class="a-head">
             <span class="index">03</span>
             <div class="a-title"><h3>朵拉</h3><span class="a-role">Visual Workflow</span></div>
@@ -1645,7 +1678,7 @@
           </dl></div></div>
         </article>
 
-        <article class="card assistant reveal">
+        <article class="card assistant reveal" data-lab="visionboard">
           <div class="a-head">
             <span class="index">04</span>
             <div class="a-title"><h3>Visionboard</h3><span class="a-role">Vision Board</span></div>
@@ -1661,7 +1694,7 @@
           </dl></div></div>
         </article>
 
-        <article class="card assistant wide reveal">
+        <article class="card assistant wide reveal" data-lab="comic">
           <div class="a-head">
             <span class="index">05</span>
             <div class="a-title"><h3>漫画工作流</h3><span class="a-role">Comic Pipeline</span></div>
@@ -1688,7 +1721,7 @@
           </dl></div></div>
         </article>
 
-        <article class="card assistant reveal">
+        <article class="card assistant reveal" data-lab="efficiency">
           <div class="a-head">
             <span class="index">06</span>
             <div class="a-title"><h3>效率管理系统</h3><span class="a-role">Productivity System</span></div>
@@ -2116,6 +2149,10 @@
           if (it) { const im = new Image(); im.src = it.src; }
         });
       }
+      // 供「证据图」模块复用同一个灯箱
+      window.YL = window.YL || {};
+      window.YL.openLightbox = (list, i) => openLb(list, i);
+
       let lbReturnFocus = null;
       function openLb(list, i) {
         lbList = list; lbIndex = i; renderLb();
@@ -2370,6 +2407,70 @@
         if (!ticking) { ticking = true; requestAnimationFrame(frame); }
       }, { passive: true });
       frame();
+    })();
+
+    // ============================================================
+    // ✦ 证据图：自动发现
+    //   把截图存成 assets/lab-<key>-01.png（或 .jpg）即可自动出现，
+    //   无需改动代码。文件不存在就什么都不渲染。
+    //   caption 可选：在下面的 CAPTIONS 里按需补写。
+    // ============================================================
+    (function evidence() {
+      const KEYS = ['jizi', 'naixu', 'duola', 'visionboard', 'comic', 'efficiency'];
+      const MAX = 4;                      // 每张卡最多探测 4 张
+      const EXTS = ['png', 'jpg', 'jpeg', 'webp'];
+      const CAPTIONS = {};                // 例：'jizi-01': '己子每日自述：它今天学了什么'
+
+      const probe = (src) => new Promise((res) => {
+        const im = new Image();
+        im.onload = () => res(src);
+        im.onerror = () => res(null);
+        im.src = src;
+      });
+
+      KEYS.forEach(async (key) => {
+        const card = document.querySelector('[data-lab="' + key + '"]');
+        if (!card) return;
+        const found = [];
+        for (let n = 1; n <= MAX; n++) {
+          const num = String(n).padStart(2, '0');
+          let hit = null;
+          for (const ext of EXTS) {
+            hit = await probe('assets/lab-' + key + '-' + num + '.' + ext);
+            if (hit) break;
+          }
+          if (!hit) break;              // 编号必须连续，缺一即停
+          found.push({ src: hit, id: key + '-' + num });
+        }
+        if (!found.length) return;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'evidence';
+        wrap.innerHTML = '<div class="evidence-label">证据</div><div class="ev-strip"></div>';
+        const strip = wrap.querySelector('.ev-strip');
+        const list = found.map((f) => ({ src: f.src, alt: '', caption: CAPTIONS[f.id] || '' }));
+
+        found.forEach((f, i) => {
+          const fig = document.createElement('figure');
+          fig.className = 'ev';
+          fig.tabIndex = 0;
+          fig.setAttribute('role', 'button');
+          const cap = CAPTIONS[f.id] || '';
+          fig.setAttribute('aria-label', '放大查看证据图 ' + (i + 1) + (cap ? '：' + cap : ''));
+          fig.innerHTML = '<img loading="lazy" decoding="async" src="' + f.src + '" alt="">' +
+                          (cap ? '<figcaption>' + cap + '</figcaption>' : '');
+          const open = () => window.YL && window.YL.openLightbox && window.YL.openLightbox(list, i);
+          fig.addEventListener('click', open);
+          fig.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+          });
+          strip.appendChild(fig);
+        });
+
+        // 放在展开按钮之前，未展开时也能看到
+        const toggle = card.querySelector('.a-toggle');
+        if (toggle) card.insertBefore(wrap, toggle); else card.appendChild(wrap);
+      });
     })();
 
     // ============================================================
