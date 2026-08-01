@@ -35,8 +35,12 @@ class ContentPolishTests(unittest.TestCase):
         state = content_state()["text"]
         self.assertIn("<strong>产品设计</strong>", state["text.0166"])
         self.assertIn("<strong>今日总览</strong>", state["text.0201"])
-        for name in ("lab-visionboard-01.png", "lab-visionboard-02.png", "lab-efficiency-01.png"):
-            self.assertTrue((ROOT / "assets" / name).is_file(), name)
+        for relative in (
+            "assets/gallery/lab-visionboard/lab-visionboard-01.png",
+            "assets/gallery/lab-visionboard/lab-visionboard-02.png",
+            "assets/gallery/lab-efficiency/lab-efficiency-01.png",
+        ):
+            self.assertTrue((ROOT / relative).is_file(), relative)
 
     def test_writing_metrics_are_evidence_backed_not_fabricated_engagement(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")

@@ -45,16 +45,19 @@
 index.html          # 全站结构、样式与主要交互
 content-data.js     # 本机编辑器保存的内容与顺序
 content-runtime.js  # 在动效启动前应用内容
-assets/             # 作品图、二维码、图标与分享封面
+gallery-data.js     # 图库顺序、注释与替代文字的唯一清单
+gallery-runtime.js  # 渲染作品区与 Lab 证据图库
+assets/gallery/     # 按栏目整理、可由编辑器扫描的作品图片
+assets/             # 二维码、图标与分享封面
 ```
 
 ## 沉浸式编辑器
 
 本机编辑器位于同级目录 `..\Yilin-editor\`，不会作为 GitHub Pages 页面发布。双击其中的
-`start-editor.cmd`，即可在真实页面上直接修改文字、替换图片、调整章节和卡片顺序。
+`start-editor.cmd`，即可在真实页面上直接修改文字、替换普通图片、调整章节和卡片顺序；“图片库”支持批量上传、改注释与替代文字、排序、定位、扫描本地文件夹和软删除。
 
 “保存本地草稿”只修改本机文件；“发布给所有人”才会创建 Git commit 并推送。编辑器只会暂存
-`content-data.js` 和它自己上传的图片，不会把 `deliverables/` 等其它目录带入公开仓库。
+`content-data.js`、`gallery-data.js` 和两者明确引用的图片，不会把 `deliverables/` 等其它目录带入公开仓库。
 
 本地预览：
 
