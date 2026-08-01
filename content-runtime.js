@@ -235,11 +235,16 @@
     return true;
   }
 
-  function setText(key, html) {
+  function setText(key, html, options = {}) {
     const element = textElements.get(key);
     if (!element) return false;
     state.text[key] = normalizeHtml(html);
-    element.innerHTML = state.text[key];
+    // During native contenteditable input, rewriting innerHTML destroys the
+    // browser selection and sends the caret back to the start. The owner
+    // editor can update state only; programmatic callers still render by default.
+    if (options.render !== false && element.innerHTML !== state.text[key]) {
+      element.innerHTML = state.text[key];
+    }
     return true;
   }
 
