@@ -617,6 +617,25 @@
       transition: border-color .4s ease, color .4s ease;
     }
     .project-card:hover .pill { border-color: var(--hair); }
+    .writing-metrics {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      max-width: 660px; margin: 30px 0 8px; border-block: 1px solid var(--hair-2);
+    }
+    .writing-metric {
+      min-width: 0; padding: 18px 20px 18px 0;
+      border-right: 1px solid var(--hair-2);
+    }
+    .writing-metric + .writing-metric { padding-left: 20px; }
+    .writing-metric:last-child { border-right: 0; }
+    .wm-value {
+      display: block; color: var(--gold); font-family: "Cormorant Garamond", serif;
+      font-size: clamp(28px, 3vw, 42px); font-weight: 400; line-height: 1;
+    }
+    .wm-label {
+      display: block; margin-top: 7px; color: var(--ink-3);
+      font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+    }
+    .wm-note { display: block; margin-top: 4px; color: var(--ink-4); font-size: 10px; }
 
     /* 画廊 */
     .portfolio-wall, .shuxia-wall {
@@ -716,7 +735,11 @@
       display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
       max-width: var(--maxw); margin-inline: auto;
     }
-    .assistant { display: flex; flex-direction: column; padding: clamp(30px, 3vw, 42px); }
+    .assistant {
+      display: flex; flex-direction: column; padding: clamp(30px, 3vw, 42px);
+      font-family: "Inter", "PingFang SC", "Microsoft YaHei UI", sans-serif;
+      min-width: 0;
+    }
     .a-head { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
     .a-head .index { font-size: clamp(26px, 2.6vw, 36px); line-height: .9; flex: 0 0 auto; }
     .a-title { flex: 1 1 auto; min-width: 0; }
@@ -772,14 +795,27 @@
     }
     .assistant.open .a-body { grid-template-rows: 1fr; opacity: 1; }
     .a-body > div { overflow: hidden; }
-    .a-body dl { margin-top: 22px; display: grid; gap: 16px; }
+    .a-body dl { margin-top: 24px; display: grid; gap: 22px; }
     .a-body dt {
       font-size: 10.5px; letter-spacing: .2em; text-transform: uppercase;
       color: var(--gold); margin-bottom: 6px;
     }
-    .a-body dd { color: var(--ink-2); font-size: 14.5px; line-height: 1.8; }
+    .a-body dd {
+      color: var(--ink-2); font-family: inherit; font-size: 14.5px;
+      font-weight: 300; line-height: 1.88;
+    }
+    .a-body dd > strong {
+      display: block; margin-bottom: 3px; color: var(--ink);
+      font-family: inherit; font-size: 12px; font-weight: 500; letter-spacing: .04em;
+    }
+    .a-body dd > strong:not(:first-child) { margin-top: 15px; }
     .a-body dd b { color: var(--ink); font-weight: 400; }
     .a-body .todo { color: var(--ink-4); font-style: italic; }
+    .assistant[data-lab="duola"] .a-toggle,
+    .assistant[data-lab="duola"] .a-body,
+    .assistant[data-lab="comic"] .a-toggle,
+    .assistant[data-lab="comic"] .a-body,
+    .comic-wall, .comic-note { display: none; }
 
     /* 证据图：文件存在才出现，缺席时整块不渲染 */
     .evidence { margin-top: 26px; }
@@ -869,6 +905,7 @@
 
     /* 占位卡：为未来的作品留出位置，而不是显得没做完 */
     .assistant.slot {
+      display: none;
       border-style: dashed; border-color: var(--hair-2);
       background: transparent; justify-content: center; align-items: center;
       text-align: center; min-height: 190px;
@@ -885,8 +922,10 @@
     .assistant.slot p { color: var(--ink-4); font-size: 13px; }
 
     @media (max-width: 900px) {
-      .lab-grid { grid-template-columns: 1fr; }
-      .a-head { flex-wrap: wrap; }
+      .lab-grid { grid-template-columns: minmax(0, 1fr); min-width: 0; }
+      .a-head { display: grid; grid-template-columns: auto minmax(0, 1fr); min-width: 0; }
+      .a-head .status { grid-column: 2; justify-self: start; }
+      .a-title, .a-line, .a-body dd { min-width: 0; overflow-wrap: anywhere; }
     }
 
     /* ============================================================
@@ -928,6 +967,23 @@
     }
     .proof-link:hover { opacity: 1; border-bottom-color: var(--gold); }
     .step li { line-height: 1.7; }
+    .step.keywords { grid-template-columns: 140px 1fr; }
+    .keyword-list {
+      display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px; padding: 0; list-style: none;
+    }
+    .keyword-list li {
+      min-height: 82px; display: flex; flex-direction: column;
+      align-items: flex-start; justify-content: space-between; min-width: 0;
+      padding: 18px; border: 1px solid var(--hair-2);
+      color: var(--ink); font-size: 15px; font-weight: 400;
+      background: linear-gradient(145deg, rgba(200,165,95,.055), transparent 72%);
+    }
+    .keyword-list li::before {
+      content: "✦"; align-self: flex-start; margin-right: 0;
+      color: var(--gold); font: 12px/1 Georgia, serif;
+    }
+    .keyword-list .content-key-reserve { display: none; }
 
     /* ============================================================
        SKILL TABLE
@@ -943,8 +999,8 @@
     tbody tr { transition: background .4s ease; }
     tbody tr:hover { background: rgba(255,255,255,.014); }
     td:first-child {
-      font-family: "Cormorant Garamond", "Songti SC", serif; font-size: 19px;
-      color: var(--ink); font-weight: 400; white-space: nowrap;
+      font-family: inherit; font-size: 16px;
+      color: var(--ink); font-weight: 500; white-space: normal;
     }
 
     /* ============================================================
@@ -1052,7 +1108,11 @@
       .project-card.case-writing > div:first-child, .project-card.case-visual > div:first-child { max-width: 100%; }
       .portfolio-wall, .shuxia-wall { margin-inline: calc(var(--gutter) * -1); padding-inline: var(--gutter); }
       .portfolio-wall .image-card, .shuxia-wall .image-card { flex-basis: min(76vw, 320px); height: min(108vw, 480px); }
+      .writing-metrics { grid-template-columns: 1fr; }
+      .writing-metric, .writing-metric + .writing-metric { padding: 14px 0; border-right: 0; border-bottom: 1px solid var(--hair-2); }
       .step { grid-template-columns: 1fr; gap: 16px; }
+      .step.keywords { grid-template-columns: 1fr; }
+      .keyword-list { grid-template-columns: 1fr; }
       .step time { font-size: 32px; }
       .cursor-glow { display: none; }
       .marquee-track.zh { letter-spacing: .2em; }
@@ -1519,7 +1579,7 @@
       <div class="section-head reveal">
         <div class="kicker">02 — Selected Work</div>
         <h2 id="sec-work">小作品们</h2>
-        <p>未完待续。</p>
+        <p>写作、视觉与自造工具：这些是我把想法做成具体作品的方式。</p>
       </div>
       <div class="projects">
         <article class="card project-card case-writing reveal">
@@ -1528,6 +1588,23 @@
             <p>我正在搭建的个人写作账号，围绕旅行、城市、审美、关系、语言和自我整理展开，记录我在不同地方遇见的人、场景和想法。</p>
             <div class="project-meta">
               <span class="pill">Writing</span><span class="pill">Personal Brand</span><span class="pill">City Notes</span><span class="pill">Visual Identity</span>
+            </div>
+            <div class="writing-metrics" aria-label="树下坐写作品牌内容数据">
+              <div class="writing-metric">
+                <span class="wm-value">08</span>
+                <span class="wm-label">Selected Pieces</span>
+                <span class="wm-note">本站精选内容样本</span>
+              </div>
+              <div class="writing-metric">
+                <span class="wm-value">06</span>
+                <span class="wm-label">Core Themes</span>
+                <span class="wm-note">旅行、城市、审美、关系、语言与自我整理</span>
+              </div>
+              <div class="writing-metric">
+                <span class="wm-value">↗</span>
+                <span class="wm-label">Ongoing</span>
+                <span class="wm-note">持续写作与复盘</span>
+              </div>
             </div>
           </div>
           <div class="shuxia-wall" aria-label="树下坐内容展示">
@@ -1682,15 +1759,15 @@
           <div class="a-head">
             <span class="index">04</span>
             <div class="a-title"><h3>Visionboard</h3><span class="a-role">Vision Board</span></div>
-            <span class="status proto">原型</span>
+            <span class="status live">已上线</span>
           </div>
           <p class="a-line">把想去的地方、想成为的样子，变成一面看得见的板子——让愿望从抽象的念头变成具体的画面。</p>
           <div class="a-meta"><span class="pill">Web App</span><span class="pill">MVP</span></div>
           <button class="a-toggle" aria-expanded="false">展开细节 <i>+</i></button>
           <div class="a-body"><div><dl>
-            <div><dt>为什么做</dt><dd class="todo">待补充。</dd></div>
-            <div><dt>怎么做的</dt><dd class="todo">待补充：技术栈与实现方式。</dd></div>
-            <div><dt>现在到哪一步</dt><dd class="todo">待补充：能否放一个可访问的链接或演示。</dd></div>
+            <div><dt>为什么做</dt><dd>从自己长期制作愿景板的习惯出发，做一套兼顾自由度与效率的在线工具。</dd></div>
+            <div><dt>怎么做的</dt><dd>完成从产品设计、编辑画布、自动排版到高清导出的完整链路。</dd></div>
+            <div><dt>现在到哪一步</dt><dd>已完成从零到一的可用版本，并完成线上部署。</dd></div>
           </dl></div></div>
         </article>
 
@@ -1725,16 +1802,16 @@
           <div class="a-head">
             <span class="index">06</span>
             <div class="a-title"><h3>效率管理系统</h3><span class="a-role">Productivity System</span></div>
-            <span class="status idea">待补充</span>
+            <span class="status iterate">持续迭代</span>
           </div>
           <p class="a-line">我自己搭的一套效率管理系统，把要做的事、做了多少、做得怎么样，收在同一个地方看。</p>
           <div class="a-meta"><span class="pill">Productivity</span><span class="pill">System Design</span><span class="pill">时间管理</span></div>
           <button class="a-toggle" aria-expanded="false">展开细节 <i>+</i></button>
           <div class="a-body"><div><dl>
-            <div><dt>为什么做</dt><dd class="todo">待补充：当初是什么问题，让你决定用一套系统来管，而不是靠自觉。</dd></div>
-            <div><dt>怎么做的</dt><dd class="todo">待补充：搭在什么工具上（Notion / 飞书 / 其它），由哪几个模块组成，怎么记录和复盘。</dd></div>
-            <div><dt>现在到哪一步</dt><dd class="todo">待补充：用了多久，带来了什么具体变化。</dd></div>
-            <div><dt>证据</dt><dd class="todo">待补充：系统界面截图（存为 assets/lab-efficiency-01.png 后我接进来）。</dd></div>
+            <div><dt>为什么做</dt><dd>把原本分散的任务、计时、习惯与复盘连接成一套可以持续运行的个人系统。</dd></div>
+            <div><dt>怎么做的</dt><dd>围绕今日总览、任务、专注计时、习惯、日志与复盘搭建完整流程。</dd></div>
+            <div><dt>现在到哪一步</dt><dd>核心模块已经打通并持续自用，正在根据真实使用优化统计逻辑与交互。</dd></div>
+            <div><dt>证据</dt><dd>系统今日总览界面，集中呈现任务、投入、时间记录与复盘。</dd></div>
           </dl></div></div>
         </article>
 
@@ -1781,16 +1858,16 @@
             </ul>
           </div>
         </div>
-        <div class="step reveal">
+        <div class="step keywords reveal">
           <time>03</time>
           <div>
-            <h3>他人对我的评价</h3>
-            <ul>
-              <li>不管学什么都有天分</li>
-              <li>悟性高，有耐性</li>
-              <li>有灵性，时不时会说出一些很有灵性的话</li>
-              <li>有慧根，闪闪发光让人忍不住跟着走的女孩</li>
-              <li>洞察超强，感受力强，很会发现别人的优点</li>
+            <h3>三个关键词</h3>
+            <ul class="keyword-list">
+              <li>学习能力强</li>
+              <li>有责任心</li>
+              <li>高能动性</li>
+              <li class="content-key-reserve" aria-hidden="true"></li>
+              <li class="content-key-reserve" aria-hidden="true"></li>
             </ul>
           </div>
         </div>
@@ -1811,10 +1888,10 @@
             <tr><th scope="col">方向</th><th scope="col">我能做什么</th><th scope="col">交付物</th></tr>
           </thead>
           <tbody>
-            <tr><td>AI 内容创作</td><td>围绕一个主题或账号定位，完成从选题策划、脚本撰写、素材组织到内容结构搭建的完整流程</td><td>选题库 / 视频脚本 / 图文内容 / 教学素材 / 内容栏目</td></tr>
-            <tr><td>语言与跨文化表达</td><td>面向不同语言和文化背景的人，重新组织词语、例子和语气，让内容更准确、更自然、更容易被听懂</td><td>中文教学稿 / 英文润色 / 翻译优化 / 口播稿 / 跨文化内容</td></tr>
-            <tr><td>AI 商业视觉</td><td>根据封面、海报、宣传、个人形象等具体场景，设计风格方向并用 AI 生成可展示的视觉素材</td><td>短视频封面 / 活动海报 / 杂志封面 / 人物写真 / 宣传视觉</td></tr>
-            <tr><td>AI 产品原型</td><td>从一个真实需求出发，拆解使用场景、用户路径和核心功能，做出能跑、能演示、能继续迭代的产品原型</td><td>AI 分析工具 / 个人网站 / 作品集页面 / Workflow / MVP Demo</td></tr>
+            <tr><td>内容策略与知识产品</td><td>将零散、复杂的信息重新组织为结构清晰、能够持续更新和复用的内容或知识系统</td><td>选题框架 / 内容脚本 / 研究简报 / 知识库 / 教学内容 / 内容栏目 / 自动化工作流</td></tr>
+            <tr><td>AI 产品与工作流</td><td>从真实需求出发，拆解使用场景、用户流程和核心功能，并完成可演示、可使用、可继续迭代的产品</td><td>用户流程 / 功能方案 / Web App / AI 工具 / Workflow / MVP / 上线版本</td></tr>
+            <tr><td>跨文化表达与本地化</td><td>面向不同语言和文化背景重新组织词语、语气与信息重点，让内容更自然、准确，也更容易被当地用户理解</td><td>中英双语文案 / 本地化改写 / 翻译润色 / 海外内容 / 调研与访谈材料 / 中文教学内容</td></tr>
+            <tr><td>海外市场与产品营销</td><td>从产品和目标市场出发，梳理用户、竞品、定位与传播路径，把产品能力转化为目标用户能够理解的价值表达</td><td>市场与竞品研究 / 用户洞察 / 产品定位与卖点 / 双语 Messaging / 上线传播方案 / 产品内容</td></tr>
           </tbody>
         </table>
       </div>
@@ -2425,7 +2502,10 @@
         'jizi-01':  '己子的每日自述：回溯 7/6、7/17、7/26 三次笔记，并自己更新 MEMORY.md',
         'naixu-01': '飞书里随手发一段话，奈绪整理完毕并回传同步结果',
         'naixu-02': '主题与长信息源库：五月至今持续沉淀，右侧是多步漂洗后的成稿',
-        'naixu-03': '13 万字长任务：自动切成 102 段并发处理，主模型失败后降级到备用引擎'
+        'naixu-03': '13 万字长任务：自动切成 102 段并发处理，主模型失败后降级到备用引擎',
+        'visionboard-01': 'Vision Board 产品首页：从灵感进入可视化创作',
+        'visionboard-02': 'Vision Board 编辑器：上传、排版、样式与导出集中在同一画布',
+        'efficiency-01': '效率管理系统今日总览：任务、时间投入与复盘集中呈现'
       };
 
       const probe = (src) => new Promise((res) => {
