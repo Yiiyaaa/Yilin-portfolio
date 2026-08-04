@@ -213,6 +213,12 @@ window.YILIN_GALLERY_DATA = {
           "src": "assets/gallery/lab-efficiency/lab-efficiency-01.png",
           "caption": "效率管理系统今日总览：任务、时间投入与复盘集中呈现",
           "alt": "效率管理系统今日总览"
+        },
+        {
+          "id": "lab-efficiency-1785817814-1be31d",
+          "src": "assets/gallery/lab-efficiency/1785817814-1be31d-2026-08-04-002842.png",
+          "caption": "效率管理系统项目分栏",
+          "alt": "效率管理项目志"
         }
       ]
     }
