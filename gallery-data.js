@@ -60,22 +60,10 @@ window.YILIN_GALLERY_DATA = {
       "section": "作品展示",
       "items": [
         {
-          "id": "commercial-01",
-          "src": "assets/gallery/commercial/commercial-01.webp",
-          "caption": "视频封面制作示例",
-          "alt": "夜色商业封面"
-        },
-        {
           "id": "commercial-02",
           "src": "assets/gallery/commercial/commercial-02.webp",
           "caption": "访谈海报制作示例",
           "alt": "创始人访谈海报"
-        },
-        {
-          "id": "commercial-03",
-          "src": "assets/gallery/commercial/commercial-03.webp",
-          "caption": "视频封面制作示例",
-          "alt": "长期主义封面"
         },
         {
           "id": "magazine-01",
@@ -102,12 +90,6 @@ window.YILIN_GALLERY_DATA = {
           "alt": "春日封面设计"
         },
         {
-          "id": "magazine-05",
-          "src": "assets/gallery/commercial/magazine-05.webp",
-          "caption": "杂志写真制作示例",
-          "alt": "柔粉联系页视觉"
-        },
-        {
           "id": "magazine-06",
           "src": "assets/gallery/commercial/magazine-06.webp",
           "caption": "杂志写真制作示例",
@@ -124,6 +106,12 @@ window.YILIN_GALLERY_DATA = {
           "src": "assets/gallery/lab-jizi/lab-jizi-01.png",
           "caption": "己子的每日自述：回溯 7/6、7/17、7/26 三次笔记，并自己更新 MEMORY.md",
           "alt": "己子的每日自述与记忆更新界面"
+        },
+        {
+          "id": "lab-jizi-1785776697-020ac1",
+          "src": "assets/gallery/lab-jizi/1785776697-020ac1-2026-08-03-130406.png",
+          "caption": "和己子的对话",
+          "alt": "己子解释自己的性格机制"
         }
       ]
     },
@@ -177,7 +165,44 @@ window.YILIN_GALLERY_DATA = {
     "lab-comic": {
       "label": "漫画工作流",
       "section": "The Lab",
-      "items": []
+      "items": [
+        {
+          "id": "lab-comic-1785816930-659440",
+          "src": "assets/gallery/lab-comic/1785816930-659440-image.png",
+          "caption": "",
+          "alt": "己子"
+        },
+        {
+          "id": "lab-comic-1785816940-3808c1",
+          "src": "assets/gallery/lab-comic/1785816940-3808c1-_20260521053902_1238_243.png",
+          "caption": "",
+          "alt": "漫画-树下坐"
+        },
+        {
+          "id": "lab-comic-1785816955-b901ba",
+          "src": "assets/gallery/lab-comic/1785816955-b901ba-c456c339-a72e-46d8-9bd2-6bc2b161a66d.png",
+          "caption": "",
+          "alt": "汉教-背景图"
+        },
+        {
+          "id": "lab-comic-1785817045-106eeb",
+          "src": "assets/gallery/lab-comic/1785817045-106eeb-_CHAR_01_front_bust_master.png",
+          "caption": "",
+          "alt": "候选_CHAR_01_front_bust_master"
+        },
+        {
+          "id": "lab-comic-1785817311-bd63a5",
+          "src": "assets/gallery/lab-comic/1785817311-bd63a5-image.png",
+          "caption": "",
+          "alt": "原始图"
+        },
+        {
+          "id": "lab-comic-1785817343-a21d80",
+          "src": "assets/gallery/lab-comic/1785817343-a21d80-image.png",
+          "caption": "",
+          "alt": "场景图"
+        }
+      ]
     },
     "lab-efficiency": {
       "label": "效率管理系统",
